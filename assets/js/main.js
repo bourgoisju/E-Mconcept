@@ -296,6 +296,8 @@
   const applyFilter = (f) => {
     const before = new Map(items.filter((i) => !i.hidden).map((i) => [i, i.getBoundingClientRect()]));
     items.forEach((item) => { item.hidden = !(f === 'all' || item.dataset.cat.split(' ').includes(f)); });
+    const count = $('[data-gallery-count]');
+    if (count) count.textContent = items.filter((i) => !i.hidden).length;
     if (reduceMotion) return;
     items.filter((i) => !i.hidden).forEach((item, i) => {
       const old = before.get(item);

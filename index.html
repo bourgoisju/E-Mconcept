@@ -244,21 +244,25 @@
           <button type="button" class="filter" aria-pressed="false" data-filter="reseau">Réseau</button>
           <button type="button" class="filter" aria-pressed="false" data-filter="audiovisuel">Audiovisuel</button>
           <button type="button" class="filter" aria-pressed="false" data-filter="eclairage">Éclairage</button>
+          <p class="filters-count" aria-live="polite"><span data-gallery-count>10</span> réalisations</p>
         </div>
 
         <ul class="gallery" data-gallery>
+          <li class="gallery-item feature" data-cat="audiovisuel eclairage">
+            <button type="button" class="gallery-btn" data-full="assets/img/meuble-tv-retroeclaire-1280.jpg">
+              <img src="assets/img/meuble-tv-retroeclaire-640.jpg"
+                   srcset="assets/img/meuble-tv-retroeclaire-640.jpg 640w, assets/img/meuble-tv-retroeclaire-1280.jpg 1280w"
+                   sizes="(max-width: 480px) 100vw, (max-width: 900px) 100vw, 50vw"
+                   width="640" height="480" loading="lazy" decoding="async"
+                   alt="Meuble TV sur mesure avec niches rétroéclairées en LED, barre de son et caisson de basses">
+              <span class="gallery-cap"><em class="gallery-tag">Réalisation phare</em><strong>Mur TV rétroéclairé</strong><span>Niches LED, barre de son, caisson de basses, zéro câble visible</span></span>
+            </button>
+          </li>
           <li class="gallery-item tall" data-cat="reseau">
             <button type="button" class="gallery-btn" data-full="assets/img/baie-reseau-villa-1280.jpg">
               <img src="assets/img/baie-reseau-villa-640.jpg" width="640" height="853" loading="lazy" decoding="async"
                    alt="Baie de brassage de villa avec trois panneaux RJ45 repérés, switchs et enregistreur vidéo">
               <span class="gallery-cap"><strong>Baie réseau de villa</strong><span>72 prises repérées, PoE, vidéosurveillance</span></span>
-            </button>
-          </li>
-          <li class="gallery-item wide" data-cat="audiovisuel eclairage">
-            <button type="button" class="gallery-btn" data-full="assets/img/meuble-tv-retroeclaire-1280.jpg">
-              <img src="assets/img/meuble-tv-retroeclaire-640.jpg" width="640" height="480" loading="lazy" decoding="async"
-                   alt="Meuble TV sur mesure avec niches rétroéclairées en LED, barre de son et caisson de basses">
-              <span class="gallery-cap"><strong>Mur TV rétroéclairé</strong><span>Niches LED, barre de son, caisson</span></span>
             </button>
           </li>
           <li class="gallery-item tall" data-cat="electricite">
@@ -364,7 +368,7 @@
     </section>
 
     <!-- CONTACT -->
-    <section class="section section-contact" id="contact" aria-labelledby="contact-title">
+    <section class="section section-dark section-contact" id="contact" aria-labelledby="contact-title">
       <div class="container contact-grid">
         <div class="contact-intro">
           <p class="eyebrow reveal"><span class="eyebrow-num">04</span>Contact</p>
