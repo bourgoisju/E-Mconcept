@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bourgoisju.github.io/E-Mconcept/sitemap.xml

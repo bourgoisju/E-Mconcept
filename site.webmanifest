@@ -1,0 +1,13 @@
+{
+  "name": "EM Concept — Électricité & Média",
+  "short_name": "EM Concept",
+  "lang": "fr",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0b1a33",
+  "icons": [
+    { "src": "assets/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
