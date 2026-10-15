@@ -91,7 +91,8 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 | Bouton principal | reflet lumineux qui balaie le bouton (750 ms), flèche décalée de 4 px, enfoncement de 97 % au clic (90 ms) |
 | CTA magnétiques (`data-magnetic`) | suivent le pointeur (±8 px / ±6 px), reviennent avec `--ease-back` |
 | Pastille de filtre | une seule pastille blanche glisse sous le filtre actif (320 ms, in-out) |
-| Cartes services | lévitation de 6 px, halo qui suit le pointeur, trait dégradé qui se dessine en haut |
+| Index des services | le titre glisse de 0,35 em, le numéro passe en bleu, le courant se dessine sous la ligne (600 ms, in-out) ; la réalisation correspondante flotte sous le curseur (suivi lissé à 18 % par image, inclinaison de ±6° selon la vitesse, fondu enchaîné entre photos) |
+| Numéro de téléphone (pied de page) | le dégradé remplit le texte de gauche à droite (950 ms, in-out), la flèche avance |
 | Photos | zoom de 1,06 (950 ms), légende qui monte |
 | Liens texte | soulignement qui se dessine depuis la gauche |
 | Champs | label qui passe en bleu au focus, halo cyan |

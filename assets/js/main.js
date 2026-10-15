@@ -203,15 +203,44 @@
     });
   }
 
-  /* ---------- Service cards: pointer spotlight ---------- */
-  if (finePointer) {
-    $$('[data-tilt]').forEach((card) => {
-      card.addEventListener('pointermove', (e) => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-        card.style.setProperty('--my', `${e.clientY - r.top}px`);
-      });
+  /* ---------- Services index: the matching job floats under the cursor ----------
+     Position eases toward the pointer (lerp 0.18/frame); tilt follows horizontal speed, ±6°. */
+  const svcList = $('[data-svc-list]');
+  const preview = $('[data-svc-preview]');
+  if (svcList && preview && finePointer && !reduceMotion && window.matchMedia('(min-width: 901px)').matches) {
+    const track = $('.svc-preview-track', preview);
+    const rows = $$('.svc', svcList);
+    const frames = rows.map((row) => {
+      const img = document.createElement('img');
+      img.src = $('.svc-img', row).src;
+      img.alt = '';
+      img.decoding = 'async';
+      track.append(img);
+      return img;
     });
+    let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false;
+    const tick = () => {
+      const dx = tx - x;
+      x += dx * 0.18;
+      y += (ty - y) * 0.18;
+      preview.style.setProperty('--x', `${x.toFixed(1)}px`);
+      preview.style.setProperty('--y', `${y.toFixed(1)}px`);
+      preview.style.setProperty('--rot', `${clamp(dx * 0.06, -6, 6).toFixed(2)}deg`);
+      raf = (on || Math.abs(dx) > 0.5) ? requestAnimationFrame(tick) : 0;
+    };
+    rows.forEach((row, i) => {
+      row.addEventListener('pointerenter', () => frames.forEach((f, j) => f.classList.toggle('is-current', i === j)));
+    });
+    svcList.addEventListener('pointerenter', (e) => {
+      x = tx = e.clientX; y = ty = e.clientY;
+      on = true;
+      preview.classList.add('is-on');
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+    svcList.addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; });
+    svcList.addEventListener('pointerleave', () => { on = false; preview.classList.remove('is-on'); });
+    window.addEventListener('scroll', () => { if (on) { on = false; preview.classList.remove('is-on'); } }, { passive: true });
+    svcList.addEventListener('pointermove', () => { if (!on) { on = true; preview.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(tick); } });
   }
 
   /* ---------- Magnetic CTAs: follow the pointer a few pixels, spring back ---------- */
