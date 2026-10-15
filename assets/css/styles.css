@@ -154,9 +154,16 @@ h2 em {
   backdrop-filter: saturate(1.4) blur(12px);
   box-shadow: 0 1px 0 var(--line);
 }
+/* Transparent state: a soft scrim keeps the logo and links readable over bright parts of the photo. */
+.site-header::before {
+  content: ""; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgb(5 11 23 / 60%), rgb(5 11 23 / 0%));
+  transition: opacity var(--dur-ui);
+}
+.site-header.is-scrolled::before, .site-header.is-open::before, .site-header.is-solid::before { opacity: 0; }
 .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
-.brand img { width: 60px; height: auto; }
+.brand img { width: 70px; height: auto; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .brand-text small { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
