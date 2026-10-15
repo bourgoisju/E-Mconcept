@@ -1,22 +1,72 @@
-/* EM Concept — interactions (vanilla, no dependencies) */
+/* EM Concept — interactions & motion system (vanilla, no dependencies)
+   Spec: docs/motion-system.md
+   Rules: one rAF scroll loop, only visible elements update, only transform/opacity/clip-path move,
+   everything degrades to the final state under prefers-reduced-motion. */
 (() => {
   'use strict';
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const hasIO = 'IntersectionObserver' in window;
+  const STAGGER = 70;   // ms, matches --stagger
+  const EASE_IN_OUT = 'cubic-bezier(.65, 0, .35, 1)';
+  const EASE_OUT = 'cubic-bezier(.16, 1, .3, 1)';
+  const EASE_IN = 'cubic-bezier(.7, 0, .84, 0)';
 
-  /* ---------- Header: scrolled state ---------- */
+  /* =========================================================
+     Scroll engine: register effects, update them in a single rAF,
+     skip the ones that are off-screen.
+     ========================================================= */
+  const effects = [];
+  const onFrame = [];
+  let rafId = 0;
+  const frame = () => {
+    rafId = 0;
+    const vh = window.innerHeight;
+    onFrame.forEach((fn) => fn(vh));
+    effects.forEach((fx) => { if (fx.active) fx.update(fx.el.getBoundingClientRect(), vh); });
+  };
+  const requestFrame = () => { if (!rafId) rafId = requestAnimationFrame(frame); };
+  window.addEventListener('scroll', requestFrame, { passive: true });
+  window.addEventListener('resize', requestFrame);
+
+  const fxObserver = hasIO && new IntersectionObserver((entries) => {
+    // One last update on enter/leave so a section skipped by a fast jump settles in its end state.
+    entries.forEach((e) => {
+      e.target.__fx.forEach((fx) => { fx.active = e.isIntersecting; fx.update(e.target.getBoundingClientRect(), window.innerHeight); });
+    });
+    requestFrame();
+  }, { rootMargin: '25% 0px' });
+
+  const addEffect = (el, update) => {
+    const fx = { el, update, active: true };
+    (el.__fx = el.__fx || []).push(fx);
+    effects.push(fx);
+    if (fxObserver) fxObserver.observe(el);
+    requestFrame();
+  };
+
+  /* ---------- Header: solid after the hero edge, hides on read-down, returns on scroll-up ---------- */
   const header = $('[data-header]');
-  if (header && !header.classList.contains('is-solid')) {
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+  const nav = $('[data-nav]');
+  if (header) {
+    let lastY = window.scrollY;
+    onFrame.push((vh) => {
+      const y = window.scrollY;
+      if (!header.classList.contains('is-solid')) header.classList.toggle('is-scrolled', y > 40);
+      const busy = header.classList.contains('is-open') || header.contains(document.activeElement);
+      if (!reduceMotion && !busy && y > vh * 0.9 && y > lastY + 6) header.classList.add('is-hidden');
+      else if (y < lastY - 6 || y < vh * 0.5 || busy) header.classList.remove('is-hidden');
+      lastY = y;
+    });
+    header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
   }
 
   /* ---------- Mobile navigation ---------- */
   const toggle = $('[data-nav-toggle]');
-  const nav = $('[data-nav]');
   if (toggle && nav) {
     const setOpen = (open) => {
       toggle.setAttribute('aria-expanded', String(open));
@@ -34,7 +84,7 @@
 
   /* ---------- Active section in nav ---------- */
   const navLinks = $$('.site-nav ul a[href^="#"]');
-  if (navLinks.length && 'IntersectionObserver' in window) {
+  if (navLinks.length && hasIO) {
     const byId = new Map(navLinks.map((a) => [a.hash.slice(1), a]));
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -48,33 +98,46 @@
     byId.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
   }
 
-  /* ---------- Reveal on scroll (staggered per parent) ---------- */
+  /* =========================================================
+     Reveals: headings get a masked wipe, photos a curtain,
+     everything else a fade-up. Elements entering together are
+     staggered in reading order (max 6 steps).
+     ========================================================= */
+  $$('.section-head h2.reveal, .contact-intro h2.reveal').forEach((h) => {
+    const inner = document.createElement('span');
+    inner.className = 'mask-inner';
+    inner.append(...h.childNodes);
+    h.append(inner);
+    h.classList.add('reveal--mask');
+  });
+  $$('.gallery-item').forEach((item) => item.classList.add('reveal', 'reveal--curtain'));
+
   const reveals = $$('.reveal');
-  if ('IntersectionObserver' in window && !reduceMotion) {
-    const groups = new Map();
-    reveals.forEach((el) => {
-      const i = groups.get(el.parentElement) || 0;
-      el.style.setProperty('--delay', `${Math.min(i, 6) * 0.08}s`);
-      groups.set(el.parentElement, i + 1);
-    });
+  if (hasIO && !reduceMotion) {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left)
+        .forEach((e, i) => {
+          e.target.style.setProperty('--delay', `${Math.min(i, 6) * STAGGER}ms`);
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
     reveals.forEach((el) => io.observe(el));
   } else {
     reveals.forEach((el) => el.classList.add('is-visible'));
   }
 
-  /* ---------- Hero: power-on intro, light switch / torch, parallax, scroll ---------- */
+  /* =========================================================
+     Hero: power-on intro, light switch / torch, parallax, scroll framing
+     ========================================================= */
   const hero = $('[data-hero]');
   if (hero) {
     const lightSwitch = $('[data-light-switch]', hero);
     const label = lightSwitch && $('[data-switch-label]', lightSwitch);
     const hint = $('[data-switch-hint]', hero);
     const heroImg = $('.hero-img--dark', hero);
-    const finePointer = window.matchMedia('(pointer: fine)').matches;
 
     const setLight = (on) => {
       hero.classList.toggle('is-lit', on);
@@ -86,7 +149,7 @@
       if (hint) hint.hidden = on;
     };
 
-    // Intro: words + current run, then the light spreads from the ceiling cove.
+    // Intro (≈2.4 s): the current runs (0–1.3 s), copy rises (0.55 s +), light spreads (1.0–3.2 s).
     let started = false;
     const start = () => {
       if (started) return;
@@ -106,7 +169,6 @@
 
     if (lightSwitch) lightSwitch.addEventListener('click', () => setLight(!hero.classList.contains('is-lit')));
 
-    // Pointer: torch position (when off) and gentle parallax.
     const moveLight = (x, y) => {
       const r = hero.getBoundingClientRect();
       hero.style.setProperty('--lx', `${x - r.left}px`);
@@ -127,24 +189,22 @@
 
     // Scroll: the photo closes into a framed screen while the copy lifts away.
     if (!reduceMotion) {
-      let ticking = false;
-      const onScroll = () => {
-        const p = Math.min(1, Math.max(0, window.scrollY / hero.offsetHeight));
-        hero.style.setProperty('--sp', p.toFixed(3));
-        ticking = false;
-      };
-      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-      onScroll();
+      addEffect(hero, (r) => hero.style.setProperty('--sp', clamp(-r.top / r.height).toFixed(3)));
     }
-
-    // Pause looping decorations when the hero is off-screen.
-    if ('IntersectionObserver' in window) {
+    if (hasIO) {
       new IntersectionObserver(([entry]) => hero.classList.toggle('is-offscreen', !entry.isIntersecting)).observe(hero);
     }
   }
 
+  /* ---------- Section transition: dark sections open from a frame ---------- */
+  if (!reduceMotion) {
+    $$('.section-dark').forEach((section) => {
+      addEffect(section, (r, vh) => section.style.setProperty('--enter', clamp((vh - r.top) / (vh * 0.55)).toFixed(3)));
+    });
+  }
+
   /* ---------- Service cards: pointer spotlight ---------- */
-  if (window.matchMedia('(hover: hover)').matches) {
+  if (finePointer) {
     $$('[data-tilt]').forEach((card) => {
       card.addEventListener('pointermove', (e) => {
         const r = card.getBoundingClientRect();
@@ -154,61 +214,179 @@
     });
   }
 
-  /* ---------- Gallery filters ---------- */
+  /* ---------- Magnetic CTAs: follow the pointer a few pixels, spring back ---------- */
+  if (finePointer && !reduceMotion) {
+    $$('[data-magnetic]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        el.classList.remove('is-releasing');
+        el.style.setProperty('--magx', `${clamp((e.clientX - r.left - r.width / 2) * 0.22, -8, 8)}px`);
+        el.style.setProperty('--magy', `${clamp((e.clientY - r.top - r.height / 2) * 0.3, -6, 6)}px`);
+      });
+      el.addEventListener('pointerleave', () => {
+        el.classList.add('is-releasing');
+        el.style.setProperty('--magx', '0px');
+        el.style.setProperty('--magy', '0px');
+      });
+    });
+  }
+
+  /* =========================================================
+     Gallery: parallax inside frames, sliding filter pill,
+     FLIP re-layout when filtering.
+     ========================================================= */
   const gallery = $('[data-gallery]');
   const items = gallery ? $$('.gallery-item', gallery) : [];
+
+  if (gallery && !reduceMotion) {
+    items.forEach((item) => {
+      const img = $('img', item);
+      addEffect(item, (r, vh) => {
+        const c = clamp((r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2), -1, 1);
+        img.style.setProperty('--py', `${(c * r.height * -0.05).toFixed(1)}px`);
+      });
+    });
+  }
+
+  const filters = $('[data-filters]');
+  const placePill = () => {
+    const active = filters && $('.filter.is-active', filters);
+    if (!active) return;
+    filters.style.setProperty('--fx', `${active.offsetLeft}px`);
+    filters.style.setProperty('--fy', `${active.offsetTop}px`);
+    filters.style.setProperty('--fw', `${active.offsetWidth}px`);
+    filters.style.setProperty('--fh', `${active.offsetHeight}px`);
+  };
+  if (filters) {
+    placePill();
+    filters.classList.add('has-indicator');
+    window.addEventListener('resize', placePill);
+    if (document.fonts) document.fonts.ready.then(placePill);
+  }
+
+  const applyFilter = (f) => {
+    const before = new Map(items.filter((i) => !i.hidden).map((i) => [i, i.getBoundingClientRect()]));
+    items.forEach((item) => { item.hidden = !(f === 'all' || item.dataset.cat.split(' ').includes(f)); });
+    if (reduceMotion) return;
+    items.filter((i) => !i.hidden).forEach((item, i) => {
+      const old = before.get(item);
+      item.classList.remove('is-entering');
+      if (old) {
+        const now = item.getBoundingClientRect();
+        const dx = old.left - now.left;
+        const dy = old.top - now.top;
+        if (dx || dy) {
+          item.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
+            { duration: 600, easing: EASE_IN_OUT });
+        }
+      } else {
+        item.style.animationDelay = `${Math.min(i, 6) * STAGGER}ms`;
+        void item.offsetWidth;
+        item.classList.add('is-entering');
+      }
+    });
+  };
+
   $$('[data-filter]').forEach((btn, _, all) => {
     btn.addEventListener('click', () => {
-      const f = btn.dataset.filter;
       all.forEach((b) => { const on = b === btn; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on)); });
-      items.forEach((item) => {
-        const show = f === 'all' || item.dataset.cat.split(' ').includes(f);
-        item.hidden = !show;
-        item.classList.remove('is-entering');
-        if (show && !reduceMotion) { void item.offsetWidth; item.classList.add('is-entering'); }
-      });
+      placePill();
+      applyFilter(btn.dataset.filter);
     });
   });
 
-  /* ---------- Lightbox ---------- */
+  /* =========================================================
+     Lightbox: the photo grows out of its thumbnail (FLIP) and
+     shrinks back into it on close. Thumbnail first, full-res swap
+     once decoded, so the animation never waits on the network.
+     ========================================================= */
   const lb = $('[data-lightbox]');
   if (lb && gallery && typeof lb.showModal === 'function') {
     const img = $('[data-lightbox-img]', lb);
     const cap = $('[data-lightbox-cap]', lb);
     let current = 0;
     let opener = null;
+    let closing = false;
     const visible = () => items.filter((i) => !i.hidden).map((i) => $('.gallery-btn', i));
 
-    const show = (index) => {
-      const list = visible();
-      current = (index + list.length) % list.length;
-      const btn = list[current];
+    const load = (btn) => {
       const thumb = $('img', btn);
-      img.src = btn.dataset.full;
+      img.style.setProperty('--ar', (thumb.naturalWidth / thumb.naturalHeight) || 4 / 3);
+      img.src = thumb.currentSrc || thumb.src;
       img.alt = thumb.alt;
-      cap.innerHTML = btn.querySelector('.gallery-cap').innerHTML;
+      cap.innerHTML = $('.gallery-cap', btn).innerHTML;
+      const full = new Image();
+      full.src = btn.dataset.full;
+      full.decode().then(() => { if (visible()[current] === btn) img.src = full.src; }).catch(() => {});
+    };
+
+    // Transform that maps the lightbox image onto the thumbnail frame (cover-fit, cropped by clip-path).
+    const flipFrom = (frame) => {
+      const r = img.getBoundingClientRect();
+      const s = Math.max(frame.width / r.width, frame.height / r.height);
+      const cx = (r.width * s - frame.width) / (2 * s);
+      const cy = (r.height * s - frame.height) / (2 * s);
+      const dx = frame.left + frame.width / 2 - (r.left + r.width / 2);
+      const dy = frame.top + frame.height / 2 - (r.top + r.height / 2);
+      return { transform: `translate(${dx}px, ${dy}px) scale(${s})`, clipPath: `inset(${cy}px ${cx}px round ${14 / s}px)` };
+    };
+    const settled = { transform: 'none', clipPath: 'inset(0px 0px round 10px)' };
+    const inView = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight; };
+
+    const open = (btn) => {
+      if (lb.open) return;
+      opener = btn;
+      current = visible().indexOf(btn);
+      load(btn);
+      lb.showModal();
+      document.body.style.overflow = 'hidden';
+      if (!reduceMotion) img.animate([flipFrom(btn.getBoundingClientRect()), settled], { duration: 700, easing: EASE_IN_OUT });
+    };
+
+    const close = () => {
+      if (closing || !lb.open) return;
+      const btn = visible()[current];
+      if (reduceMotion || !btn || !inView(btn)) { lb.close(); return; }
+      closing = true;
+      lb.classList.add('is-closing');
+      const anim = img.animate([settled, flipFrom(btn.getBoundingClientRect())], { duration: 520, easing: EASE_IN_OUT, fill: 'forwards' });
+      const done = () => { if (closing && lb.open) lb.close(); anim.cancel(); };
+      anim.onfinish = done;
+      setTimeout(done, 900); // safety net if the animation is interrupted
+    };
+
+    const step = (dir) => {
+      const list = visible();
+      const next = (current + dir + list.length) % list.length;
+      if (reduceMotion) { current = next; load(list[next]); return; }
+      img.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-dir * 40}px)` }], { duration: 180, easing: EASE_IN })
+        .onfinish = () => {
+          current = next;
+          load(list[next]);
+          img.animate([{ opacity: 0, transform: `translateX(${dir * 40}px)` }, { opacity: 1, transform: 'none' }], { duration: 380, easing: EASE_OUT });
+        };
     };
 
     gallery.addEventListener('click', (e) => {
       const btn = e.target.closest('.gallery-btn');
-      if (!btn) return;
-      opener = btn;
-      show(visible().indexOf(btn));
-      lb.showModal();
-      document.body.style.overflow = 'hidden';
+      if (btn) open(btn);
     });
-    $('[data-lb-prev]', lb).addEventListener('click', () => show(current - 1));
-    $('[data-lb-next]', lb).addEventListener('click', () => show(current + 1));
-    $('[data-lb-close]', lb).addEventListener('click', () => lb.close());
-    lb.addEventListener('click', (e) => { if (e.target === lb || e.target.tagName === 'FIGURE') lb.close(); });
+    $('[data-lb-prev]', lb).addEventListener('click', () => step(-1));
+    $('[data-lb-next]', lb).addEventListener('click', () => step(1));
+    $('[data-lb-close]', lb).addEventListener('click', close);
+    lb.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    lb.addEventListener('click', (e) => { if (e.target === lb || e.target.tagName === 'FIGURE') close(); });
     lb.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') show(current - 1);
-      if (e.key === 'ArrowRight') show(current + 1);
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
     });
     lb.addEventListener('close', () => {
+      closing = false;
+      lb.classList.remove('is-closing');
       document.body.style.overflow = '';
       img.removeAttribute('src');
-      if (opener) requestAnimationFrame(() => opener.focus());
+      const back = visible()[current] || opener;
+      if (back) requestAnimationFrame(() => back.focus({ preventScroll: true }));
     });
 
     let startX = null;
@@ -216,26 +394,29 @@
     lb.addEventListener('touchend', (e) => {
       if (startX === null) return;
       const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
       startX = null;
     });
   }
 
-  /* ---------- Steps progress line ---------- */
+  /* =========================================================
+     Method: the current runs down the line as you read;
+     each step lights up when the current reaches its node.
+     ========================================================= */
   const steps = $('[data-steps]');
-  if (steps && !reduceMotion) {
-    let ticking = false;
-    const update = () => {
-      const r = steps.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.35)));
-      steps.style.setProperty('--progress', p.toFixed(3));
-      ticking = false;
-    };
-    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    update();
-  } else if (steps) {
-    steps.style.setProperty('--progress', '1');
+  if (steps) {
+    const stepEls = $$('.step', steps);
+    if (reduceMotion) {
+      steps.style.setProperty('--progress', '1');
+      stepEls.forEach((s) => s.classList.add('is-active'));
+    } else {
+      addEffect(steps, (r, vh) => {
+        const p = clamp((vh * 0.62 - r.top) / r.height);
+        steps.style.setProperty('--progress', p.toFixed(3));
+        const reach = p * r.height;
+        stepEls.forEach((s) => s.classList.toggle('is-active', s.offsetTop + 30 <= reach + 1));
+      });
+    }
   }
 
   /* ---------- Contact form ---------- */
@@ -270,7 +451,7 @@
       if (form._honey.value) return;
 
       status.className = 'form-status';
-      status.textContent = 'Envoi en cours…';
+      status.textContent = '';
       submit.setAttribute('aria-busy', 'true');
       try {
         const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
@@ -295,4 +476,6 @@
 
   /* ---------- Footer year ---------- */
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+  requestFrame();
 })();

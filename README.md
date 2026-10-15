@@ -13,6 +13,7 @@ assets/js/main.js       Interactions : menu mobile, animations, galerie, visionn
 assets/img/             Photos optimisées (640 px et 1280 px), logo, icônes
 robots.txt, sitemap.xml, site.webmanifest
 tools/serve.ps1         Petit serveur local pour prévisualiser
+docs/motion-system.md   Spécification des animations (jetons, timings, comportements)
 ```
 
 ## Prévisualiser en local
