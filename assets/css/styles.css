@@ -384,7 +384,7 @@ h2 em {
 @media (max-width: 600px) { .hero-card { display: none; } }
 @media (max-width: 600px) {
   .hero { padding-bottom: 4.5rem; }
-  .hero-kicker { font-size: .76rem; }
+  .hero-kicker { font-size: .76rem; border-radius: 14px; line-height: 1.45; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .hero-actions .btn { width: 100%; }
   .hero-scroll { display: none; }
