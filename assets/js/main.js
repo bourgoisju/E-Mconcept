@@ -67,21 +67,80 @@
     reveals.forEach((el) => el.classList.add('is-visible'));
   }
 
-  /* ---------- Hero light switch ---------- */
+  /* ---------- Hero: power-on intro, light switch / torch, parallax, scroll ---------- */
   const hero = $('[data-hero]');
-  const lightSwitch = $('[data-light-switch]');
-  if (hero && lightSwitch) {
-    const label = $('[data-switch-label]', lightSwitch);
+  if (hero) {
+    const lightSwitch = $('[data-light-switch]', hero);
+    const label = lightSwitch && $('[data-switch-label]', lightSwitch);
+    const hint = $('[data-switch-hint]', hero);
+    const heroImg = $('.hero-img--dark', hero);
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+
     const setLight = (on) => {
       hero.classList.toggle('is-lit', on);
-      lightSwitch.setAttribute('aria-pressed', String(on));
-      label.textContent = on ? 'Éteindre la lumière' : 'Allumer la lumière';
+      hero.classList.toggle('is-torch', !on);
+      if (lightSwitch) {
+        lightSwitch.setAttribute('aria-pressed', String(on));
+        label.textContent = on ? 'Éteindre la lumière' : 'Allumer la lumière';
+      }
+      if (hint) hint.hidden = on;
     };
-    const heroImg = $('.hero-media img', hero);
-    const turnOn = () => setTimeout(() => setLight(true), reduceMotion ? 0 : 450);
-    setLight(false);
-    if (heroImg.complete) turnOn(); else heroImg.addEventListener('load', turnOn, { once: true });
-    lightSwitch.addEventListener('click', () => setLight(!hero.classList.contains('is-lit')));
+
+    // Intro: words + current run, then the light spreads from the ceiling cove.
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      if (reduceMotion) {
+        hero.style.transition = 'none';
+        hero.classList.add('is-ready', 'is-powered', 'is-lit');
+        return;
+      }
+      requestAnimationFrame(() => {
+        hero.classList.add('is-ready', 'is-powered');
+        setTimeout(() => setLight(true), 1000);
+      });
+    };
+    if (heroImg.complete) start(); else heroImg.addEventListener('load', start, { once: true });
+    setTimeout(start, 2500); // never leave the hero dark if the image is slow
+
+    if (lightSwitch) lightSwitch.addEventListener('click', () => setLight(!hero.classList.contains('is-lit')));
+
+    // Pointer: torch position (when off) and gentle parallax.
+    const moveLight = (x, y) => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty('--lx', `${x - r.left}px`);
+      hero.style.setProperty('--ly', `${y - r.top}px`);
+      return r;
+    };
+    if (finePointer && !reduceMotion) {
+      hero.addEventListener('pointermove', (e) => {
+        const r = moveLight(e.clientX, e.clientY);
+        hero.style.setProperty('--tx', `${((e.clientX - r.left) / r.width - 0.5) * -18}px`);
+        hero.style.setProperty('--ty', `${((e.clientY - r.top) / r.height - 0.5) * -12}px`);
+      });
+    } else {
+      hero.addEventListener('touchmove', (e) => {
+        if (hero.classList.contains('is-torch')) moveLight(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+    }
+
+    // Scroll: the photo closes into a framed screen while the copy lifts away.
+    if (!reduceMotion) {
+      let ticking = false;
+      const onScroll = () => {
+        const p = Math.min(1, Math.max(0, window.scrollY / hero.offsetHeight));
+        hero.style.setProperty('--sp', p.toFixed(3));
+        ticking = false;
+      };
+      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+      onScroll();
+    }
+
+    // Pause looping decorations when the hero is off-screen.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => hero.classList.toggle('is-offscreen', !entry.isIntersecting)).observe(hero);
+    }
   }
 
   /* ---------- Service cards: pointer spotlight ---------- */

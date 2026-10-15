@@ -26,7 +26,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Saira+Condensed:wght@600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,500&family=Inter:wght@400;500;600&family=Saira+Condensed:wght@600;700;800&display=swap">
   <link rel="preload" as="image" href="assets/img/chambre-eclairage-led-1280.jpg"
         imagesrcset="assets/img/chambre-eclairage-led-640.jpg 640w, assets/img/chambre-eclairage-led-1280.jpg 1280w, assets/img/chambre-eclairage-led-1920.jpg 1920w"
         imagesizes="100vw">
@@ -82,42 +82,80 @@
   </header>
 
   <main id="main">
-    <!-- HERO -->
+    <!-- HERO — « Tout se voit. Rien ne dépasse. »
+         Layers: dark photo → lit photo (masked by a growing / cursor-following light) → shade → grain → current line.
+         Intro: the current runs across the room, then the light spreads from the ceiling cove. -->
     <section class="hero" id="top" data-hero>
-      <picture class="hero-media">
-        <img src="assets/img/chambre-eclairage-led-1280.jpg"
-             srcset="assets/img/chambre-eclairage-led-640.jpg 640w, assets/img/chambre-eclairage-led-1280.jpg 1280w, assets/img/chambre-eclairage-led-1920.jpg 1920w"
-             sizes="100vw" width="1920" height="1440" fetchpriority="high"
-             alt="Chambre de villa avec gorge lumineuse LED au plafond et télévision murale">
-      </picture>
-      <div class="hero-shade" aria-hidden="true"></div>
-
-      <svg class="hero-circuit" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="trace" x1="0" x2="1">
-            <stop offset="0" stop-color="#3fb6e0"/><stop offset="1" stop-color="#a3c846"/>
-          </linearGradient>
-        </defs>
-        <path d="M0 320 H120 L160 280 H300 L330 250 H600"/>
-        <path d="M0 360 H200 L230 330 H420 L460 290 H600"/>
-        <path d="M0 60 H80 L110 90 H260"/>
-        <circle cx="260" cy="90" r="4"/><circle cx="300" cy="280" r="4"/><circle cx="420" cy="330" r="4"/>
-      </svg>
-
-      <div class="container hero-content">
-        <p class="eyebrow reveal">Intégrateur son &amp; vidéo depuis 15 ans · Var (83)</p>
-        <h1 class="hero-title reveal">Le son, l'image et le réseau, <span class="grad">intégrés avec exigence.</span></h1>
-        <p class="hero-lead reveal">Électricien de métier, spécialiste des courants faibles : home cinéma, sonorisation, TV, caméras, alarme et Wi-Fi pour maisons, villas et locaux professionnels. Un seul interlocuteur, du tableau électrique à l'écran.</p>
-        <div class="hero-actions reveal">
-          <a class="btn btn-primary" href="#contact">Demander un devis gratuit</a>
-          <a class="btn btn-ghost" href="#realisations">Voir les réalisations</a>
+      <div class="hero-stage" data-hero-stage>
+        <div class="hero-media" data-hero-media>
+          <img class="hero-img hero-img--dark"
+               src="assets/img/chambre-eclairage-led-1280.jpg"
+               srcset="assets/img/chambre-eclairage-led-640.jpg 640w, assets/img/chambre-eclairage-led-1280.jpg 1280w, assets/img/chambre-eclairage-led-1920.jpg 1920w"
+               sizes="100vw" width="1920" height="1440" fetchpriority="high"
+               alt="Suite parentale réalisée par EM Concept : gorge lumineuse LED au plafond, téléviseur mural et son intégré">
+          <img class="hero-img hero-img--lit" aria-hidden="true" alt=""
+               src="assets/img/chambre-eclairage-led-1280.jpg"
+               srcset="assets/img/chambre-eclairage-led-640.jpg 640w, assets/img/chambre-eclairage-led-1280.jpg 1280w, assets/img/chambre-eclairage-led-1920.jpg 1920w"
+               sizes="100vw" width="1920" height="1440">
         </div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-grain" aria-hidden="true"></div>
+        <svg class="hero-current" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="current" x1="0" x2="1">
+              <stop offset="0" stop-color="#3fb6e0"/><stop offset=".55" stop-color="#6cc08f"/><stop offset="1" stop-color="#a3c846"/>
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+          </defs>
+          <g class="current-trace">
+            <path class="current-glow" d="M-20 250 H300 L330 222 H700 L728 196 H1060 L1088 170 H1460"/>
+            <path class="current-core" d="M-20 250 H300 L330 222 H700 L728 196 H1060 L1088 170 H1460"/>
+          </g>
+          <circle class="current-node" cx="330" cy="222" r="5"/>
+          <circle class="current-node" cx="728" cy="196" r="5"/>
+          <circle class="current-node" cx="1088" cy="170" r="5"/>
+        </svg>
+      </div>
 
-        <button class="switch reveal" type="button" aria-pressed="true" data-light-switch>
+      <div class="container hero-content" data-hero-content>
+        <p class="hero-kicker hero-in" style="--i:0">
+          <span class="live-dot" aria-hidden="true"></span>
+          Intégrateur son, image &amp; réseau · 15 ans · Var
+        </p>
+        <h1 class="hero-title">
+          <span class="line"><span class="hero-in" style="--i:1">Tout se voit.</span></span>
+          <span class="line"><em class="hero-in" style="--i:2">Rien ne dépasse.</em></span>
+        </h1>
+        <p class="hero-lead hero-in" style="--i:3">Home cinéma, sonorisation, TV, caméras, alarme et Wi-Fi intégrés au millimètre dans les villas et résidences du Var. Câbles invisibles, réglages précis, un seul interlocuteur : un électricien devenu spécialiste des courants faibles.</p>
+        <div class="hero-actions hero-in" style="--i:4">
+          <a class="btn btn-primary btn-lg" href="#contact">
+            Demander une visite gratuite
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+          <a class="hero-call" href="tel:+33630201018">
+            <span class="hero-call-icon" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
+            <span><small>Ou appelez directement</small>06 30 20 10 18</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero-card hero-in" style="--i:5" aria-label="Réalisation présentée">
+        <div class="hero-card-head">
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span>Réalisation · Suite parentale</span>
+        </div>
+        <p>Gorge LED périphérique, TV murale, son intégré. Aucun câble apparent.</p>
+        <button class="switch" type="button" aria-pressed="true" data-light-switch>
           <span class="switch-plate" aria-hidden="true"><span class="switch-rocker"></span></span>
           <span class="switch-label" data-switch-label>Éteindre la lumière</span>
         </button>
-      </div>
+        <p class="hero-card-hint" data-switch-hint hidden>Promenez la lampe sur la pièce.</p>
+      </aside>
+
+      <a class="hero-scroll hero-in" style="--i:6" href="#services" aria-label="Découvrir nos services">
+        <span class="hero-scroll-line" aria-hidden="true"></span>
+        Découvrir
+      </a>
     </section>
 
     <!-- ENGAGEMENTS -->
