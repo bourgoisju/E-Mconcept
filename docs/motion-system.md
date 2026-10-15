@@ -99,7 +99,8 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 | Photos de la galerie | étalonnage commun au repos (contraste +6 %, saturation −14 %, légère chaleur) ; au survol, la photo d'origine revient, comme si la lumière s'allumait (600 ms) |
 | Compteur de la galerie | le nombre de réalisations suit le filtre, annoncé aux lecteurs d'écran |
 | Envoi du formulaire | trois points qui pulsent pendant l'envoi ; succès : coche dégradée qui apparaît avec un léger rebond ; erreur : secousse de 420 ms |
-| Bouton d'appel mobile | trois ondes à 4 s, puis immobile |
+| Barre de contact mobile (Appeler / WhatsApp) | fixe, sans animation en boucle ; enfoncement de 96 % au toucher (90 ms) |
+| Pastille WhatsApp (hero) | fond vert à 14 % et contour vert au survol ; étiquette « WhatsApp » qui monte de 4 px |
 
 ## 8. Mouvement réduit (`prefers-reduced-motion: reduce`)
 

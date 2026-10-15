@@ -729,19 +729,59 @@ h2 em {
 @media (min-width: 861px) { .site-footer { padding-bottom: 3rem; } }
 .legal + .site-footer { padding-top: 1rem; }
 
-/* Floating call button (mobile) */
-.call-fab {
-  position: fixed; right: 1rem; bottom: 1rem; z-index: 40; width: 60px; height: 60px; border-radius: 50%;
-  display: none; place-items: center; color: var(--ink-900); background: var(--grad);
-  box-shadow: 0 10px 30px -6px rgb(11 26 51 / 50%);
+/* ---------- WhatsApp ----------
+   WhatsApp green is used only on its own glyph, so the channel is instantly recognisable
+   without breaking the palette. */
+:root { --wa: #25d366; }
+
+.hero-direct { display: flex; align-items: center; gap: .75rem; }
+.hero-wa {
+  position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  color: var(--wa); box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 30%);
+  transition: background-color var(--dur-ui), box-shadow var(--dur-ui);
 }
-.call-fab .icon { width: 26px; height: 26px; }
-.call-fab::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 0 rgb(63 182 224 / 60%);
-  animation: ring 2.4s 4s 3; /* three gentle rings, then stillness */
+.hero-wa:hover { background: rgb(37 211 102 / 14%); box-shadow: inset 0 0 0 1.5px var(--wa); }
+.hero-wa .icon { width: 22px; height: 22px; }
+/* Tooltip label on hover/focus (desktop) */
+.hero-wa::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); translate: -50% 4px;
+  padding: .3rem .6rem; border-radius: 8px; font-size: .78rem; font-weight: 600; white-space: nowrap;
+  color: var(--ink-900); background: var(--white); opacity: 0; pointer-events: none;
+  transition: opacity var(--dur-ui), translate var(--dur-ui) var(--ease-out);
 }
-@keyframes ring { 0% { box-shadow: 0 0 0 0 rgb(63 182 224 / 55%); } 70%, 100% { box-shadow: 0 0 0 18px rgb(63 182 224 / 0%); } }
-@media (max-width: 860px) { .call-fab { display: grid; } }
+.hero-wa:hover::after, .hero-wa:focus-visible::after { opacity: 1; translate: -50% 0; }
+
+.contact-wa .icon { color: var(--wa); }
+
+.footer-wa {
+  display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; margin-top: 1.25rem;
+  font-size: 1.05rem; font-weight: 500; color: rgb(255 255 255 / 70%); text-decoration: none;
+  transition: color var(--dur-micro);
+}
+.footer-wa .icon { width: 22px; height: 22px; color: var(--wa); }
+.footer-wa span:first-of-type { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; transition: background-size var(--dur-ui) var(--ease-out); }
+.footer-wa:hover { color: var(--white); }
+.footer-wa:hover span:first-of-type { background-size: 100% 1.5px; }
+
+/* Mobile quick contact: a single glass bar within thumb reach — call (brand) | WhatsApp (its green) */
+.quick-contact {
+  position: fixed; right: 1rem; bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 40;
+  display: none; gap: 4px; padding: 4px; border-radius: 999px;
+  background: rgb(5 11 23 / 82%); backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 14px 34px -10px rgb(0 0 0 / 55%), inset 0 0 0 1px rgb(255 255 255 / 10%);
+}
+.qc-btn {
+  display: inline-flex; align-items: center; gap: .5rem; height: 52px; padding: 0 1.1rem 0 .95rem; border-radius: 999px;
+  font-weight: 600; font-size: .95rem; text-decoration: none; color: var(--white);
+  transition: scale 90ms, background-color var(--dur-ui);
+}
+.qc-btn:active { scale: .96; }
+.qc-btn .icon { width: 22px; height: 22px; }
+.qc-call { color: var(--ink-900); background: var(--white); }
+.qc-wa .icon { color: var(--wa); }
+.qc-wa:hover { background: rgb(255 255 255 / 8%); }
+@media (max-width: 860px) { .quick-contact { display: flex; } }
+@media (max-width: 360px) { .qc-btn span { display: none; } .qc-btn { padding: 0 .95rem; } }
 
 /* =========================================================
    Motion system — spec in docs/motion-system.md
