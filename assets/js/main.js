@@ -197,7 +197,8 @@
   }
 
   /* ---------- Section transition: dark sections open from a frame ---------- */
-  if (!reduceMotion) {
+  // Desktop only: on phones the scroll-driven clip-path costs more than it adds.
+  if (!reduceMotion && finePointer) {
     $$('.section-dark').forEach((section) => {
       addEffect(section, (r, vh) => section.style.setProperty('--enter', clamp((vh - r.top) / (vh * 0.55)).toFixed(3)));
     });
@@ -267,7 +268,7 @@
   const gallery = $('[data-gallery]');
   const items = gallery ? $$('.gallery-item', gallery) : [];
 
-  if (gallery && !reduceMotion) {
+  if (gallery && !reduceMotion && finePointer) {
     items.forEach((item) => {
       const img = $('img', item);
       addEffect(item, (r, vh) => {
