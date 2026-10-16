@@ -25,7 +25,6 @@
      /realisations/{slug}/
    /methode/                 Méthode & engagements
    /a-propos/                Thomas Di Clemente, 15 ans d'intégration
-   /formules/                Essentiel / Confort / Signature (sur devis)
    /journal/                 Blog (CMS : Article)  /journal/{slug}/
    /contact/                 Devis multi-étapes, téléphone, WhatsApp
    /mentions-legales/        /confidentialite/      /styleguide/ (noindex)
@@ -39,11 +38,10 @@
    06 Réalisations ........... galerie masonry + visionneuse
    07 Méthode (pin) .......... timeline 4 étapes, progression épinglée
    08 Comparatif ............. plusieurs artisans vs un intégrateur unique
-   09 Formules ............... 3 périmètres, sur devis, CTA qui pré-remplit le formulaire
-   10 Garanties .............. engagements vérifiables
-   11 FAQ .................... objections fréquentes
-   12 Devis (3 étapes) ....... conversion
-   13 Footer riche ........... plan du site, contacts, légal
+   09 Garanties .............. engagements vérifiables
+   10 FAQ .................... objections fréquentes
+   11 Devis (3 étapes) ....... conversion
+   12 Footer riche ........... plan du site, contacts, légal
    +  Barre CTA mobile sticky, bannière de consentement
 
  3) UI KIT — TOKENS (voir :root) & COMPOSANTS (classes BEM)
@@ -58,7 +56,7 @@
             50 header, 60 bannière, 70 modale.
    Composants : .hdr (header), .btn (--primary / --ghost / --wa / --sm / --lg), .badge, .card-svc,
             .kpi, .ba (avant/après), .masonry, .lb (visionneuse), .tl (timeline), .cmp (comparatif),
-            .plan-card (formule), .faq, .form (+ .field, .chips, .steps), .toast, .consent, .mbar.
+            .faq, .form (+ .field, .chips, .steps), .toast, .consent, .mbar.
 
  4) ANIMATIONS (quand / comment / easing / durée)
    Easing par défaut : out-quart cubic-bezier(.25,1,.5,1). Entrées 200–500 ms, sorties ×0.6.
@@ -112,7 +110,7 @@
 
  10) TRACKING (window.dataLayer)
    cta_click {location, label} · phone_click {location} · whatsapp_click {location} ·
-   layer_toggle {layer} · gallery_open {item} · ba_slide {value} · plan_select {plan} ·
+   layer_toggle {layer} · gallery_open {item} · ba_slide {value} · 
    form_step {step} · form_submit_success {project} · form_submit_error {reason} · consent_update {analytics}
    Conversions : form_submit_success, phone_click, whatsapp_click.
 
@@ -471,29 +469,6 @@ button{cursor:pointer}
   .cmp th,.cmp td{padding:4px 0;border:0;background:none!important}
   .cmp td::before{content:attr(data-h);display:block;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:8px}
 }
-
-/* =========================================================================
-   PLANS (formules)
-   ========================================================================= */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);align-items:stretch}
-.plan-card{position:relative;display:flex;flex-direction:column;gap:16px;padding:32px 28px;border-radius:var(--r3);background:#fff;box-shadow:var(--sh-1);transition:translate var(--d2) var(--ease),box-shadow var(--d2) var(--ease)}
-.plan-card:hover{translate:0 -4px;box-shadow:var(--sh-2)}
-.plan-card--hl{background:var(--ink);color:#fff}
-.plan-card--hl h3,.plan-card--hl .plan-card__price{color:#fff}
-.plan-card.plan-card--hl p:not(.plan-card__price),.plan-card.plan-card--hl li{color:rgb(255 255 255/78%)}
-.plan-card__badge{position:absolute;top:-12px;left:28px;padding:5px 12px;border-radius:var(--rp);background:linear-gradient(90deg,var(--accent),var(--green));color:var(--ink);font-weight:600;font-size:.78rem}
-.plan-card__price{font-family:var(--f-title);font-weight:700;font-size:1.9rem;letter-spacing:-.03em;color:var(--ink)}
-.plan-card__price small{display:block;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-.plan-card--hl .plan-card__price small{color:rgb(255 255 255/55%)}
-.plan-card p{color:var(--ink-2)}
-.plan-card ul{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
-.plan-card--hl ul{border-color:rgb(255 255 255/15%)}
-.plan-card li{display:flex;gap:10px;color:var(--ink-2)}
-.plan-card li::before{content:"";flex:none;width:6px;height:6px;margin-top:.6em;border-radius:2px;background:var(--accent)}
-.plan-card .btn{margin-top:auto}
-.plan-card--hl .btn{--bg:#fff;--fg:var(--ink)}
-@media (max-width:920px){.plans{grid-template-columns:1fr}}
-
 /* =========================================================================
    TRUST
    ========================================================================= */
@@ -710,10 +685,6 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
 .ok::before{background-color:var(--green)}
 
 /* Featured plan: blue gradient */
-.plan-card--hl{background:linear-gradient(160deg,var(--blue-1),var(--blue-3));box-shadow:0 30px 60px -24px rgb(11 63 184/60%)}
-.plan-card--hl .btn{--bg:#fff;--fg:var(--navy)}
-.plan-card li::before{background:var(--accent)}
-.plan-card__badge{background:var(--brand-grad);color:var(--ink)}
 
 /* Trust icons */
 .trust .icon{color:var(--accent)}
@@ -748,7 +719,7 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
         <li><a href="#services">Services</a></li>
         <li><a href="#realisations">Réalisations</a></li>
         <li><a href="#methode">Méthode</a></li>
-        <li><a href="#formules">Formules</a></li>
+        
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="nav__cta">
@@ -1007,46 +978,11 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
   </div>
 </section>
 
-<!-- ============================ PLANS ============================ -->
-<section class="section" id="formules" aria-labelledby="pl-t" style="background:var(--paper-2)">
-  <div class="wrap">
-    <header class="sec-head">
-      <p class="mono tag rv"><b>06</b> Formules</p>
-      <h2 id="pl-t" class="rv">Trois périmètres pour commencer.</h2>
-      <p class="rv">Chaque maison est différente&nbsp;: les formules fixent le cadre, la visite fixe le prix. Le devis est gratuit et détaillé.</p>
-    </header>
-    <div class="plans">
-      <article class="plan-card rv">
-        <h3>Essentiel</h3>
-        <p class="plan-card__price"><small>Une pièce</small>Sur devis</p>
-        <p>Pour transformer un salon ou une chambre.</p>
-        <ul><li>TV fixée, câbles dans le mur</li><li>Barre de son ou enceintes encastrées</li><li>Prise réseau dédiée</li></ul>
-        <a class="btn" href="#devis" data-plan="Essentiel" data-track="plan_select">Choisir Essentiel</a>
-      </article>
-      <article class="plan-card plan-card--hl rv">
-        <span class="plan-card__badge">Le plus demandé</span>
-        <h3>Confort</h3>
-        <p class="plan-card__price"><small>Toute la maison</small>Sur devis</p>
-        <p>Le réseau, le son et l'image pensés pour toute la maison.</p>
-        <ul><li>Baie de brassage &amp; Wi-Fi maillé</li><li>Home cinéma + son multiroom</li><li>TV dans les pièces de vie</li><li>Plans et repérage remis</li></ul>
-        <a class="btn" href="#devis" data-plan="Confort" data-track="plan_select" data-magnetic>Choisir Confort</a>
-      </article>
-      <article class="plan-card rv">
-        <h3>Signature</h3>
-        <p class="plan-card__price"><small>Villa complète</small>Sur devis</p>
-        <p>Les cinq couches, de l'électricité à la sécurité.</p>
-        <ul><li>Tout Confort, plus&nbsp;:</li><li>Caméras, alarme, visiophone</li><li>Tableau électrique &amp; éclairage LED</li><li>Extérieurs&nbsp;: terrasse, piscine, portail</li></ul>
-        <a class="btn" href="#devis" data-plan="Signature" data-track="plan_select">Choisir Signature</a>
-      </article>
-    </div>
-  </div>
-</section>
-
 <!-- ============================ TRUST ============================ -->
-<section class="section" aria-labelledby="tr-t">
+<section class="section" aria-labelledby="tr-t" style="background:var(--paper-2)">
   <div class="wrap">
     <header class="sec-head">
-      <p class="mono tag rv"><b>07</b> Engagements</p>
+      <p class="mono tag rv"><b>06</b> Engagements</p>
       <h2 id="tr-t" class="rv">Ce sur quoi vous pouvez compter.</h2>
     </header>
     <ul class="trust">
@@ -1059,10 +995,10 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
 </section>
 
 <!-- ============================ FAQ ============================ -->
-<section class="section" id="faq" aria-labelledby="faq-t" style="padding-top:0">
+<section class="section" id="faq" aria-labelledby="faq-t">
   <div class="wrap">
     <header class="sec-head">
-      <p class="mono tag rv"><b>08</b> Questions fréquentes</p>
+      <p class="mono tag rv"><b>07</b> Questions fréquentes</p>
       <h2 id="faq-t" class="rv">Les réponses avant l'appel.</h2>
     </header>
     <div class="faq">
@@ -1080,7 +1016,7 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
 <section class="section" id="devis" aria-labelledby="dv-t" style="background:var(--paper-2)">
   <div class="wrap contact">
     <div class="contact__aside">
-      <p class="mono tag rv"><b>09</b> Devis gratuit</p>
+      <p class="mono tag rv"><b>08</b> Devis gratuit</p>
       <h2 id="dv-t" class="rv" style="margin:16px 0">Décrivez votre projet en 1 minute.</h2>
       <p class="rv" style="font-size:var(--fs-lead);color:var(--ink-2)">Nous vous rappelons pour fixer une visite. Pressé&nbsp;? Appelez ou écrivez directement.</p>
       <ul class="rv">
@@ -1094,7 +1030,6 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
       <input type="hidden" name="_subject" value="Demande de devis — site EM Concept (variante 02)">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="formule" value="" data-plan-field>
       <div class="hp" aria-hidden="true"><label for="hp">Ne pas remplir</label><input id="hp" name="_honey" tabindex="-1" autocomplete="off"></div>
 
       <ol class="steps mono" aria-hidden="true"><li class="is-current">1 · Projet</li><li>2 · Détails</li><li>3 · Contact</li></ol>
@@ -1170,7 +1105,7 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
         </a>
         <p class="ftr__claim" style="margin-top:28px">Tout est relié.<br>Rien ne se voit.</p>
       </div>
-      <nav aria-label="Plan du site"><h3>Plan du site</h3><ul><li><a href="#services">Services</a></li><li><a href="#realisations">Réalisations</a></li><li><a href="#methode">Méthode</a></li><li><a href="#formules">Formules</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
+      <nav aria-label="Plan du site"><h3>Plan du site</h3><ul><li><a href="#services">Services</a></li><li><a href="#realisations">Réalisations</a></li><li><a href="#methode">Méthode</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
       <div><h3>Services</h3><ul><li><a href="#services">Son &amp; home cinéma</a></li><li><a href="#services">TV &amp; vidéo</a></li><li><a href="#services">Caméras &amp; alarme</a></li><li><a href="#services">Réseau &amp; Wi-Fi</a></li><li><a href="#services">Électricité</a></li></ul></div>
       <div><h3>Contact</h3><ul>
         <li><a href="tel:+33630201018" data-track="phone_click" data-loc="footer">06 30 20 10 18</a></li>
@@ -1396,13 +1331,6 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
   });
   onScroll();
 
-  /* ---------- Plans → prefill form ---------- */
-  $$('[data-plan]').forEach((b) => b.addEventListener('click', () => {
-    $('[data-plan-field]').value = b.dataset.plan;
-    track('plan_select', { plan: b.dataset.plan });
-    toast(`Formule ${b.dataset.plan} sélectionnée`);
-  }));
-
   /* ---------- Toast ---------- */
   const toastEl = $('[data-toast]'); let toastT;
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('is-on'), 2600); }
@@ -1410,7 +1338,7 @@ body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),li
   /* ---------- Generic tracking ---------- */
   document.addEventListener('click', (e) => {
     const a = e.target.closest('[data-track]');
-    if (a && a.dataset.track !== 'plan_select') track(a.dataset.track, { location: a.dataset.loc || '', label: a.textContent.trim().slice(0, 40) });
+    if (a) track(a.dataset.track, { location: a.dataset.loc || '', label: a.textContent.trim().slice(0, 40) });
   });
 
   /* ---------- Multi-step form ---------- */
