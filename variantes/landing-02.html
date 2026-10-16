@@ -126,7 +126,7 @@
 <meta name="description" content="Home cinéma, sonorisation, TV, caméras, alarme, Wi-Fi et électricité posés sans un câble visible. 15 ans d'intégration, un seul interlocuteur. Devis gratuit.">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://bourgoisju.github.io/E-Mconcept/">
-<meta name="theme-color" content="#F4F5F0">
+<meta name="theme-color" content="#0B3FB8">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="EM Concept">
@@ -607,6 +607,129 @@ button{cursor:pointer}
   .js .bp-draw{stroke-dashoffset:0}
   .js .hl{--hlx:1}
 }
+
+/* =========================================================================
+   THÈME « BLEU PLAN » — cyanotype vif
+   Hero et plan sur bleu roi profond, traits blancs, couches néon avec halo.
+   Sections claires en blanc pur / bleu glacier, accents cyan et vert du logo.
+   ========================================================================= */
+:root{
+  --paper:#FFFFFF; --paper-2:#EEF5FF; --line:#DCE6F3; --line-2:#C3D2E8;
+  --ink:#0A1F44; --ink-2:#33496F; --ink-3:#6178A0;
+  --navy:#1446D1; --accent:#00A8E8; --green:#7DC242;
+  --c-elec:#FFB400; --c-net:#00C2FF; --c-son:#8CE03A; --c-vid:#8B6CFF; --c-sec:#FF3D5E;
+  --blue-1:#0B3FB8; --blue-2:#082A80; --blue-3:#051B57;
+  --brand-grad:linear-gradient(100deg,#00A8E8,#4FC58A 55%,#8CC63F);
+}
+body{background-image:linear-gradient(rgb(20 70 209/.04) 1px,transparent 1px),linear-gradient(90deg,rgb(20 70 209/.04) 1px,transparent 1px)}
+.tag b{color:var(--navy)}
+.hl{color:inherit}
+.hl::after{background:var(--brand-grad);height:.14em}
+
+/* Primary buttons: royal blue; on blue backgrounds they turn white */
+.btn{--bg:var(--navy);box-shadow:0 12px 26px -12px rgb(20 70 209/70%)}
+.btn:hover{box-shadow:0 16px 32px -12px rgb(20 70 209/75%),0 0 0 4px rgb(0 168 232/18%)}
+.btn--ghost,.btn--wa{--bg:transparent;box-shadow:inset 0 0 0 1.5px var(--line-2)}
+
+/* Header over the blue hero */
+.hdr:not(.is-stuck):not(.is-open){color:#fff}
+.hdr:not(.is-stuck):not(.is-open) .nav__list a{color:rgb(255 255 255/82%)}
+.hdr:not(.is-stuck):not(.is-open) .nav__list a:hover,.hdr:not(.is-stuck):not(.is-open) .nav__list a[aria-current="true"]{color:#fff}
+.hdr:not(.is-stuck):not(.is-open) .brand__txt span{color:rgb(255 255 255/65%)}
+.hdr:not(.is-stuck):not(.is-open) .btn--ghost,.hdr:not(.is-stuck):not(.is-open) .btn--wa{--fg:#fff;box-shadow:inset 0 0 0 1.5px rgb(255 255 255/40%)}
+.hdr:not(.is-stuck):not(.is-open) .btn:not(.btn--ghost):not(.btn--wa){--bg:#fff;--fg:var(--navy)}
+.hdr:not(.is-stuck):not(.is-open) .burger{background:#fff;color:var(--navy)}
+.hdr.is-stuck{background:rgb(255 255 255/90%)}
+
+/* Hero: cyanotype */
+.hero{position:relative;color:#fff;overflow:hidden;
+  background:
+    radial-gradient(900px 600px at 85% 20%,rgb(0 194 255/28%),transparent 60%),
+    radial-gradient(700px 500px at 0% 100%,rgb(140 224 58/16%),transparent 60%),
+    linear-gradient(160deg,var(--blue-1),var(--blue-2) 55%,var(--blue-3));}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255/.07) 1px,transparent 1px);background-size:32px 32px;
+  mask-image:linear-gradient(180deg,#000 60%,transparent)}
+.hero>*{position:relative}
+.hero h1{color:#fff}
+.hero .tag{color:rgb(255 255 255/70%)} .hero .tag b{color:var(--c-net)} .hero .tag::after{background:rgb(255 255 255/30%)}
+.hero__lead{color:rgb(255 255 255/84%)}
+.hero__meta{color:rgb(255 255 255/72%)} .hero__meta li::before{background:var(--c-son);box-shadow:0 0 8px var(--c-son)}
+.hero .btn:not(.btn--wa){--bg:#fff;--fg:var(--navy);box-shadow:0 18px 40px -16px rgb(0 0 0/55%)}
+.hero .btn--wa{--fg:#fff;box-shadow:inset 0 0 0 1.5px rgb(255 255 255/40%)}
+.hero .btn--wa:hover{background:rgb(37 211 102/16%);box-shadow:inset 0 0 0 1.5px var(--wa)}
+
+/* The plan itself: blue sheet, white walls, neon layers */
+.blueprint{background:#0C3496;box-shadow:0 40px 90px -30px rgb(0 0 0/60%),inset 0 0 0 1px rgb(255 255 255/14%)}
+.blueprint__bar{border-color:rgb(255 255 255/14%);color:rgb(255 255 255/70%)}
+.blueprint__dots i{background:rgb(255 255 255/25%)}
+.blueprint__svg{background:
+  linear-gradient(rgb(255 255 255/.08) 1px,transparent 1px) 0 0/20px 20px,
+  linear-gradient(90deg,rgb(255 255 255/.08) 1px,transparent 1px) 0 0/20px 20px,#0E3BA6}
+.bp-wall{stroke:#fff}
+.bp-part{stroke:rgb(255 255 255/70%)}
+.bp-out{stroke:rgb(255 255 255/45%)}
+.bp-room,.bp-dim{fill:#A9C8FF}
+.bp-dimline{stroke:#A9C8FF}
+.layer path.wire{stroke-width:2.4;filter:drop-shadow(0 0 3px var(--lc))}
+.layer .dev *{fill:#0E3BA6}
+.layer .dev .fill{fill:var(--lc)}
+.layer.is-on .dev{filter:drop-shadow(0 0 4px var(--lc))}
+.layer .cone{opacity:.22}
+.blueprint__stamp{background:#0E3BA6;color:#fff;border-color:#fff}
+.blueprint__legend{border-color:rgb(255 255 255/14%)}
+.chip{background:rgb(255 255 255/7%);color:rgb(255 255 255/80%);box-shadow:inset 0 0 0 1px rgb(255 255 255/18%)}
+.chip:hover{background:rgb(255 255 255/12%);color:#fff}
+.chip::before{opacity:.55}
+.chip[aria-pressed="true"]{background:rgb(255 255 255/10%);color:#fff;box-shadow:inset 0 0 0 1.5px var(--lc),0 0 18px -4px var(--lc)}
+.chip[aria-pressed="true"]::before{box-shadow:0 0 8px var(--lc)}
+.blueprint__caption{color:rgb(255 255 255/80%)}
+
+/* KPIs: white band, gradient figures */
+.kpis{background:#fff;border-color:var(--line)}
+.kpi__n>span{background:linear-gradient(120deg,var(--navy),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi__n{color:var(--navy)}
+.kpi__n small{color:var(--accent)}
+
+/* Cards: brighter icon tiles */
+.card-svc{box-shadow:0 1px 2px rgb(10 31 68/6%),0 14px 30px -18px rgb(20 70 209/35%)}
+.card-svc__ic{background:color-mix(in srgb,var(--lc) 16%,#fff)}
+.card-svc li{background:var(--paper-2);color:var(--ink-2)}
+
+/* Before/after labels in brand blue */
+.ba__lbl{background:rgb(20 70 209/85%)}
+
+/* Timeline */
+.tl__num{color:var(--navy);box-shadow:0 0 0 2px var(--line),0 10px 24px -12px rgb(20 70 209/40%)}
+.tl__step.is-active .tl__num{background:var(--navy);color:#fff;box-shadow:0 0 0 6px rgb(20 70 209/14%)}
+.tl__bar i{background:var(--brand-grad)}
+
+/* Comparison: EM column in royal blue */
+.cmp thead th:last-child{background:var(--navy)}
+.cmp td:last-child{background:rgb(20 70 209/6%);color:var(--ink)}
+.ok::before{background-color:var(--green)}
+
+/* Featured plan: blue gradient */
+.plan-card--hl{background:linear-gradient(160deg,var(--blue-1),var(--blue-3));box-shadow:0 30px 60px -24px rgb(11 63 184/60%)}
+.plan-card--hl .btn{--bg:#fff;--fg:var(--navy)}
+.plan-card li::before{background:var(--accent)}
+.plan-card__badge{background:var(--brand-grad);color:var(--ink)}
+
+/* Trust icons */
+.trust .icon{color:var(--accent)}
+.trust li{box-shadow:inset 0 0 0 1px var(--line),0 10px 24px -20px rgb(20 70 209/40%)}
+
+/* FAQ / form accents */
+.faq details[open]{box-shadow:inset 0 0 0 1.5px var(--navy),var(--sh-1)}
+.chips input:checked+span{background:var(--navy)}
+.steps li.is-done::before,.steps li.is-current::before{background:var(--brand-grad)}
+.consent input{accent-color:var(--navy)}
+
+/* Footer and mobile bar: deep blue */
+.ftr{background:linear-gradient(180deg,var(--blue-2),var(--blue-3))}
+.mbar{background:rgb(8 42 128/92%)}
+.mbar .is-main{color:var(--navy)}
+.toast{background:var(--navy)}
 </style>
 </head>
 
