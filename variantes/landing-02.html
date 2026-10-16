@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+ EM CONCEPT — LANDING VARIANTE #02 « LE PLAN INVISIBLE »
+ Fichier unique HTML + CSS + JS, prêt à copier-coller. Aucune dépendance.
+ Images : ../assets/img/ (photos réelles de chantiers, optimisées 640/1280 px).
+================================================================================
+
+ CONCEPT
+ Un intégrateur pose ce qu'on ne voit pas. Le hero est un plan d'architecte d'une villa :
+ l'utilisateur allume une à une les « couches » invisibles (Électricité, Réseau, Son,
+ Vidéo, Sécurité). Le site entier adopte le langage du plan technique : papier clair,
+ trame, cartouche, cotes, typographie mono pour les annotations.
+
+ 1) SITEMAP (pages & collections CMS)
+   /                         Home (cette page)
+   /services/                Index services
+     /services/son-home-cinema/   /services/tv-video/   /services/cameras-alarme/
+     /services/reseau-wifi/       /services/electricite/
+   /realisations/            Index études de cas (CMS : CaseStudy)
+     /realisations/{slug}/
+   /methode/                 Méthode & engagements
+   /a-propos/                Thomas Di Clemente, 15 ans d'intégration
+   /formules/                Essentiel / Confort / Signature (sur devis)
+   /journal/                 Blog (CMS : Article)  /journal/{slug}/
+   /contact/                 Devis multi-étapes, téléphone, WhatsApp
+   /mentions-legales/        /confidentialite/      /styleguide/ (noindex)
+
+ 2) SECTIONS DE LA HOME (ordre — but)
+   01 Header sticky .......... navigation + 2 canaux directs (tel, WhatsApp) + CTA devis
+   02 Hero « plan » .......... promesse + démonstration interactive des 5 couches
+   03 KPIs ................... preuve chiffrée (compteurs) : 15 ans, 5 métiers, 0 câble, 83 & 06
+   04 Services (5 cartes) .... bénéfices par métier, profondeur au survol
+   05 Avant / derrière ....... slider « ce que vous voyez / ce que nous posons »
+   06 Réalisations ........... galerie masonry + visionneuse
+   07 Méthode (pin) .......... timeline 4 étapes, progression épinglée
+   08 Comparatif ............. plusieurs artisans vs un intégrateur unique
+   09 Formules ............... 3 périmètres, sur devis, CTA qui pré-remplit le formulaire
+   10 Garanties .............. engagements vérifiables
+   11 FAQ .................... objections fréquentes
+   12 Devis (3 étapes) ....... conversion
+   13 Footer riche ........... plan du site, contacts, légal
+   +  Barre CTA mobile sticky, bannière de consentement
+
+ 3) UI KIT — TOKENS (voir :root) & COMPOSANTS (classes BEM)
+   Couleurs : --paper #F4F5F0, --paper-2 #ECEEE7, --ink #0B1A33, --ink-2 #3D4A63, --ink-3 #7A859A,
+              --line #D5D9CF, --navy #1E4A92 (marque), --accent #1FA7D8 (cyan marque, AA sur blanc en gras ≥ 18px),
+              --green #8DB83A (marque), couches : --c-elec #E2A21B, --c-net #1FA7D8, --c-son #7FB02E,
+              --c-vid #5B6CF0, --c-sec #E5484D. Contrastes texte : ink/paper 15.9:1, ink-2/paper 8.6:1.
+   Typo : Poppins 600/700 (titres), Inter 400/500/600 (texte), JetBrains Mono 500 (annotations).
+          Échelle : 12 / 14 / 16 / 18 / 22 / 28 / 36 / 48 / 64 / 88 (clamp fluide).
+   Espacements : base 8 px (4, 8, 12, 16, 24, 32, 48, 64, 96, 128). Rayons : 6 / 12 / 20 / 999.
+   Ombres : --sh-1 (carte), --sh-2 (carte survolée), --sh-3 (modale). z-index : 10 contenu, 40 CTA sticky,
+            50 header, 60 bannière, 70 modale.
+   Composants : .hdr (header), .btn (--primary / --ghost / --wa / --sm / --lg), .badge, .card-svc,
+            .kpi, .ba (avant/après), .masonry, .lb (visionneuse), .tl (timeline), .cmp (comparatif),
+            .plan-card (formule), .faq, .form (+ .field, .chips, .steps), .toast, .consent, .mbar.
+
+ 4) ANIMATIONS (quand / comment / easing / durée)
+   Easing par défaut : out-quart cubic-bezier(.25,1,.5,1). Entrées 200–500 ms, sorties ×0.6.
+   - Chargement : header 300 ms, titre ligne par ligne (masque, 450 ms, +80 ms/ligne), plan qui se trace
+     (stroke-dashoffset 1,2 s), puis cycle automatique des couches toutes les 2,6 s jusqu'à interaction.
+   - Couche activée : traits qui se dessinent 700 ms in-out, appareils qui apparaissent (scale .4→1, 300 ms, décalés 40 ms).
+   - Reveal au scroll : opacity 0→1 + translateY 24→0, 450 ms, lots décalés de 60 ms.
+   - KPIs : compteurs 0→valeur, 1 200 ms, out-quart, au premier passage.
+   - Cartes services : perspective 900 px, rotateX/Y max 5°, ombre qui s'approfondit, 250 ms.
+   - Boutons : magnétisme ±6 px, retour élastique 450 ms cubic-bezier(.34,1.56,.64,1), pression 0.97.
+   - Méthode : colonne de gauche épinglée (sticky), barre de progression liée au scroll, étapes actives.
+   - Transitions de page : fondu sortant 220 ms sur les liens internes, fondu entrant 300 ms.
+   - prefers-reduced-motion : tout est affiché dans l'état final, pas de cycle, pas de parallaxe.
+
+ 5) SEO (cette page)
+   Title  : « Intégrateur son, vidéo & réseau · Var & Alpes-Maritimes | EM Concept » (≤ 60 car.)
+   Meta   : « Home cinéma, sonorisation, TV, caméras, alarme, Wi-Fi et électricité posés sans un câble
+            visible. 15 ans d'intégration, un seul interlocuteur. Devis gratuit. » (≤ 155 car.)
+   OG/Twitter : og-image.jpg 1200×630. Variante : noindex + canonical vers la home officielle
+            pour éviter le contenu dupliqué tant qu'elle n'est pas choisie.
+   JSON-LD : Organization + Electrician (LocalBusiness), WebSite, Service ×5, FAQPage, BreadcrumbList.
+            (SearchAction omise : le site n'a pas de moteur de recherche interne — à ajouter avec le blog.)
+
+ 6) ACCESSIBILITÉ (WCAG 2.2 AA)
+   Lien d'évitement, 1 seul H1, H2/H3 hiérarchiques, focus visibles (3 px cyan), cibles ≥ 44 px,
+   couches = boutons aria-pressed + légende textuelle du plan, slider = input range étiqueté,
+   FAQ = <details>/<summary> natifs, visionneuse = <dialog> (Échap, flèches, retour du focus),
+   formulaire : labels explicites, erreurs aria-live, aria-invalid, étapes annoncées, consentement requis.
+
+ 7) COPYS A/B (H1)
+   A : « Tout est relié. Rien ne se voit. »
+   B : « Le son, l'image et le réseau, sans un fil visible. »
+   CTA A : « Obtenir mon devis gratuit » — B : « Planifier une visite »
+
+ 8) PROMPTS IMAGE / VIDÉO (à produire pour remplacer ou compléter les photos)
+   Hero : « Salon de villa méditerranéenne au crépuscule, enceintes encastrées invisibles, TV murale
+     affleurante, gorge LED 2700 K, baie vitrée sur piscine, objectif 24 mm, lumière chaude basse,
+     aucun câble visible, photographie d'architecture, contraste doux. »
+   Derrière le mur : « Baie de brassage 19" parfaitement peignée, étiquettes imprimées, câbles blancs
+     Cat6A, éclairage latéral froid, 50 mm, profondeur de champ courte. »
+   Vidéo boucle 6 s : travelling latéral lent d'un plafond, la gorge LED s'allume de gauche à droite.
+   Portrait : « Électricien en tenue sombre réglant un ampli home cinéma, lumière de fenêtre, 85 mm. »
+
+ 9) SCHÉMA CMS
+   Service      { name, slug, layer(enum: elec|net|son|vid|sec), summary, benefits[], hero_image, faq[] → FAQ }
+   CaseStudy    { title, slug, city, department(enum: 83|06), services[] → Service, cover, gallery[],
+                  challenge, solution, gear[], date, featured(bool) }
+   Testimonial  { author, city, quote, rating(1–5), case → CaseStudy, source_url }  (à alimenter avec de vrais avis)
+   Article      { title, slug, excerpt, body(rich), cover, category, published_at, reading_time }
+   FAQ          { question, answer(rich), service → Service, order }
+
+ 10) TRACKING (window.dataLayer)
+   cta_click {location, label} · phone_click {location} · whatsapp_click {location} ·
+   layer_toggle {layer} · gallery_open {item} · ba_slide {value} · plan_select {plan} ·
+   form_step {step} · form_submit_success {project} · form_submit_error {reason} · consent_update {analytics}
+   Conversions : form_submit_success, phone_click, whatsapp_click.
+
+ 11) PERFORMANCE
+   Budget : < 350 Ko au premier affichage mobile, < 30 requêtes, LCP < 2,0 s (4G), CLS < 0,05, INP < 200 ms.
+   Images : srcset 640/1280, loading="lazy" hors écran, dimensions explicites. (Prochaine étape : WebP/AVIF.)
+   Polices : 3 familles, display=swap, preconnect. JS : 1 fichier inline, aucune librairie, rAF unique.
+================================================================================
+-->
+<title>Intégrateur son, vidéo &amp; réseau · Var &amp; Alpes-Maritimes | EM Concept</title>
+<meta name="description" content="Home cinéma, sonorisation, TV, caméras, alarme, Wi-Fi et électricité posés sans un câble visible. 15 ans d'intégration, un seul interlocuteur. Devis gratuit.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://bourgoisju.github.io/E-Mconcept/">
+<meta name="theme-color" content="#F4F5F0">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="EM Concept">
+<meta property="og:title" content="Tout est relié. Rien ne se voit. — EM Concept">
+<meta property="og:description" content="Intégrateur son, vidéo, réseau et sécurité dans le Var et les Alpes-Maritimes. Un seul interlocuteur, du tableau électrique à l'écran.">
+<meta property="og:image" content="https://bourgoisju.github.io/E-Mconcept/assets/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Poppins:wght@600;700&display=swap">
+<script>document.documentElement.classList.add('js');window.dataLayer=window.dataLayer||[];</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "Electrician"],
+      "@id": "https://bourgoisju.github.io/E-Mconcept/#org",
+      "name": "EM Concept",
+      "legalName": "E&M Concept",
+      "url": "https://bourgoisju.github.io/E-Mconcept/",
+      "logo": "https://bourgoisju.github.io/E-Mconcept/assets/img/icon-512.png",
+      "image": "https://bourgoisju.github.io/E-Mconcept/assets/img/og-image.jpg",
+      "telephone": "+33630201018",
+      "email": "e.mconcept83@gmail.com",
+      "founder": { "@type": "Person", "name": "Thomas Di Clemente" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Roquebrune-sur-Argens", "postalCode": "83520", "addressRegion": "Var", "addressCountry": "FR" },
+      "areaServed": [{ "@type": "AdministrativeArea", "name": "Var (83)" }, { "@type": "AdministrativeArea", "name": "Alpes-Maritimes (06)" }]
+    },
+    { "@type": "WebSite", "@id": "https://bourgoisju.github.io/E-Mconcept/#site", "url": "https://bourgoisju.github.io/E-Mconcept/", "name": "EM Concept", "inLanguage": "fr-FR", "publisher": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" } },
+    { "@type": "Service", "name": "Son & home cinéma", "serviceType": "Intégration audio", "provider": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" }, "areaServed": "Var, Alpes-Maritimes" },
+    { "@type": "Service", "name": "TV & vidéo", "serviceType": "Intégration vidéo", "provider": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" }, "areaServed": "Var, Alpes-Maritimes" },
+    { "@type": "Service", "name": "Caméras & alarme", "serviceType": "Sécurité électronique", "provider": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" }, "areaServed": "Var, Alpes-Maritimes" },
+    { "@type": "Service", "name": "Réseau & Wi-Fi", "serviceType": "Réseau informatique résidentiel", "provider": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" }, "areaServed": "Var, Alpes-Maritimes" },
+    { "@type": "Service", "name": "Électricité générale", "serviceType": "Électricité", "provider": { "@id": "https://bourgoisju.github.io/E-Mconcept/#org" }, "areaServed": "Var, Alpes-Maritimes" },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Dans quelle zone intervenez-vous ?", "acceptedAnswer": { "@type": "Answer", "text": "Dans tout le Var et les Alpes-Maritimes, depuis Roquebrune-sur-Argens." } },
+        { "@type": "Question", "name": "Le devis est-il payant ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. La visite et le devis détaillé sont gratuits et sans engagement." } },
+        { "@type": "Question", "name": "Pouvez-vous intervenir sur une maison déjà habitée ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui. Nous étudions les passages existants (gaines, faux-plafonds, combles) pour limiter les saignées, et le chantier est rangé chaque soir." } },
+        { "@type": "Question", "name": "Faut-il plusieurs artisans pour le son, le réseau et l'électricité ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. Électricien de métier et intégrateur son et vidéo, EM Concept réalise l'ensemble : un seul interlocuteur, une installation cohérente." } }
+      ]
+    },
+    { "@type": "BreadcrumbList", "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://bourgoisju.github.io/E-Mconcept/" }] }
+  ]
+}
+</script>
+
+<style>
+/* =========================================================================
+   TOKENS
+   ========================================================================= */
+:root{
+  --paper:#F4F5F0; --paper-2:#ECEEE7; --white:#fff;
+  --ink:#0B1A33; --ink-2:#3D4A63; --ink-3:#6B768C; --line:#D5D9CF; --line-2:#C3C9BC;
+  --navy:#1E4A92; --accent:#1FA7D8; --green:#8DB83A; --wa:#25D366;
+  --c-elec:#E2A21B; --c-net:#1FA7D8; --c-son:#7FB02E; --c-vid:#5B6CF0; --c-sec:#E5484D;
+  --f-title:"Poppins",system-ui,sans-serif; --f-text:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --fs-h1:clamp(2.6rem,1.4rem + 4.6vw,5.5rem); --fs-h2:clamp(2rem,1.3rem + 2.4vw,3.5rem); --fs-h3:1.375rem;
+  --fs-lead:clamp(1.05rem,1rem + .35vw,1.25rem);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s9:96px; --s10:128px;
+  --r1:6px; --r2:12px; --r3:20px; --rp:999px;
+  --sh-1:0 1px 2px rgb(11 26 51/6%),0 6px 18px -8px rgb(11 26 51/16%);
+  --sh-2:0 2px 4px rgb(11 26 51/6%),0 24px 48px -20px rgb(11 26 51/30%);
+  --sh-3:0 30px 80px -20px rgb(11 26 51/45%);
+  --ease:cubic-bezier(.25,1,.5,1); --ease-io:cubic-bezier(.65,0,.35,1); --ease-back:cubic-bezier(.34,1.56,.64,1);
+  --d1:200ms; --d2:300ms; --d3:450ms; --d4:700ms;
+  --gutter:clamp(16px,4vw,40px); --max:1240px; --hdr:76px;
+}
+
+/* =========================================================================
+   BASE
+   ========================================================================= */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr) + 16px);-webkit-text-size-adjust:100%}
+body{margin:0;font:400 1rem/1.6 var(--f-text);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;
+  /* blueprint grid: 8px minor / 64px major */
+  background-image:linear-gradient(rgb(11 26 51/.035) 1px,transparent 1px),linear-gradient(90deg,rgb(11 26 51/.035) 1px,transparent 1px);
+  background-size:64px 64px;}
+body.is-leaving{opacity:0;transition:opacity 220ms var(--ease-io)}
+.js body{animation:page-in 300ms var(--ease) both}
+@keyframes page-in{from{opacity:0}}
+img,svg{display:block;max-width:100%}
+img{height:auto}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-title);font-weight:700;line-height:1.06;letter-spacing:-.025em;margin:0;color:var(--ink)}
+h2{font-size:var(--fs-h2)} h3{font-size:var(--fs-h3);letter-spacing:-.015em;line-height:1.2}
+p{margin:0} ul,ol{margin:0;padding:0;list-style:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:16px;top:-80px;z-index:100;padding:12px 16px;border-radius:var(--r1);background:var(--ink);color:#fff;font-weight:600;text-decoration:none}
+.skip:focus{top:16px}
+.wrap{width:min(var(--max),100% - 2*var(--gutter));margin-inline:auto}
+.grid-12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s5)}
+.icon{width:1.25em;height:1.25em;flex:none}
+.mono{font-family:var(--f-mono);font-weight:500;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.section{padding-block:clamp(72px,10vw,128px);position:relative}
+.sec-head{max-width:760px;margin-bottom:clamp(40px,6vw,72px)}
+.sec-head h2{margin-top:var(--s4)}
+.sec-head p{margin-top:var(--s4);font-size:var(--fs-lead);color:var(--ink-2)}
+.tag{display:inline-flex;align-items:center;gap:10px;color:var(--ink-3)}
+.tag b{color:var(--navy);font-weight:500}
+.tag::after{content:"";width:40px;height:1px;background:var(--line-2)}
+.hl{color:var(--navy);position:relative;white-space:nowrap}
+.hl::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.12em;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transform:scaleX(var(--hlx,1));transform-origin:left;transition:transform 900ms var(--ease) 600ms}
+.js .hl{--hlx:0} .js .is-ready .hl{--hlx:1}
+
+/* =========================================================================
+   BUTTONS
+   ========================================================================= */
+.btn{--bg:var(--ink);--fg:#fff;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:0;border-radius:var(--rp);background:var(--bg);color:var(--fg);font-weight:600;font-size:.98rem;text-decoration:none;white-space:nowrap;
+  translate:var(--mx,0) var(--my,0);transition:background-color var(--d1),box-shadow var(--d2) var(--ease),scale 90ms;box-shadow:0 10px 24px -14px rgb(11 26 51/70%)}
+.btn:hover{box-shadow:0 16px 30px -14px rgb(11 26 51/70%),0 0 0 4px rgb(31 167 216/14%)}
+.btn:active{scale:.97}
+.btn .icon{transition:translate var(--d2) var(--ease)} .btn:hover .icon--go{translate:4px 0}
+.btn--ghost{--bg:transparent;--fg:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.btn--ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn--wa{--bg:transparent;--fg:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line-2)} .btn--wa .icon{color:var(--wa)}
+.btn--wa:hover{box-shadow:inset 0 0 0 1.5px var(--wa);background:rgb(37 211 102/8%)}
+.btn--sm{min-height:44px;padding:0 16px;font-size:.92rem}
+.btn--lg{min-height:58px;padding:0 28px;font-size:1.05rem}
+.btn--icon{width:44px;padding:0}
+.btn[hidden]{display:none}
+.is-releasing{transition:translate 450ms var(--ease-back),background-color var(--d1),box-shadow var(--d2) var(--ease)}
+
+/* =========================================================================
+   HEADER (sticky, responsive)
+   ========================================================================= */
+.hdr{position:fixed;inset:0 0 auto;z-index:50;height:var(--hdr);transition:background-color var(--d2),box-shadow var(--d2),translate var(--d2) var(--ease-io)}
+.hdr.is-stuck{background:rgb(244 245 240/88%);backdrop-filter:saturate(1.4) blur(14px);box-shadow:0 1px 0 var(--line)}
+.hdr.is-hidden{translate:0 -100%}
+.hdr__in{height:100%;display:flex;align-items:center;gap:var(--s5)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;margin-right:auto}
+.brand img{width:62px}
+.brand__txt{display:grid;line-height:1.05}
+.brand__txt b{font-family:var(--f-title);font-size:1.15rem;letter-spacing:-.01em}
+.brand__txt span{font-size:.72rem;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;align-items:center;gap:var(--s6)}
+.nav__list{display:flex;gap:var(--s5)}
+.nav__list a{position:relative;display:inline-block;padding:10px 0;text-decoration:none;font-weight:500;color:var(--ink-2);transition:color var(--d1)}
+.nav__list a::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform var(--d2) var(--ease)}
+.nav__list a:hover,.nav__list a[aria-current="true"]{color:var(--ink)}
+.nav__list a:hover::after,.nav__list a[aria-current="true"]::after{transform:scaleX(1)}
+.nav__cta{display:flex;align-items:center;gap:8px}
+.burger{display:none;width:44px;height:44px;border:0;border-radius:var(--rp);background:var(--ink);color:#fff;position:relative}
+.burger i,.burger i::before,.burger i::after{position:absolute;left:13px;width:18px;height:2px;border-radius:2px;background:currentColor;transition:transform var(--d2) var(--ease),opacity var(--d1)}
+.burger i{top:21px} .burger i::before,.burger i::after{content:"";left:0} .burger i::before{top:-6px} .burger i::after{top:6px}
+.burger[aria-expanded="true"] i{background:transparent}
+.burger[aria-expanded="true"] i::before{transform:translateY(6px) rotate(45deg)}
+.burger[aria-expanded="true"] i::after{transform:translateY(-6px) rotate(-45deg)}
+@media (max-width:1080px){
+  .nav__list{gap:var(--s4)} .nav__cta .btn--hide-md{display:none}
+}
+@media (max-width:900px){
+  .burger{display:block}
+  .nav{position:fixed;inset:var(--hdr) 0 auto;flex-direction:column;align-items:stretch;gap:var(--s5);padding:var(--s5) var(--gutter) var(--s6);background:var(--paper);box-shadow:0 30px 40px -30px rgb(11 26 51/40%);
+    opacity:0;visibility:hidden;translate:0 -8px;transition:opacity var(--d2),translate var(--d2) var(--ease),visibility 0s var(--d2)}
+  .nav.is-open{opacity:1;visibility:visible;translate:0 0;transition:opacity var(--d2),translate var(--d2) var(--ease)}
+  .nav__list{flex-direction:column;gap:0}
+  .nav__list a{display:block;padding:14px 0;font-size:1.2rem;border-bottom:1px solid var(--line)}
+  .nav__list a::after{display:none}
+  .nav__cta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .nav__cta .btn{width:100%} .nav__cta .btn--hide-md{display:inline-flex;grid-column:1/-1}
+  .hdr.is-open{background:var(--paper)}
+}
+
+/* =========================================================================
+   HERO — interactive wiring plan
+   ========================================================================= */
+.hero{padding:calc(var(--hdr) + clamp(32px,6vw,72px)) 0 clamp(56px,8vw,96px)}
+.hero__grid{align-items:center}
+.hero__copy{grid-column:1/span 6}
+.hero__plan{grid-column:7/span 6}
+.hero h1{font-size:var(--fs-h1);letter-spacing:-.035em;line-height:1.02;margin:var(--s5) 0}
+.hero h1 .ln{display:block;overflow:clip;padding-bottom:.06em}
+.hero h1 .ln>span{display:inline-block}
+.js .hero h1 .ln>span{translate:0 105%;transition:translate var(--d3) var(--ease)}
+.js .is-ready h1 .ln>span{translate:0 0}
+.js .is-ready h1 .ln:nth-child(2)>span{transition-delay:80ms}
+.hero__lead{font-size:var(--fs-lead);color:var(--ink-2);max-width:52ch}
+.hero__actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--s6)}
+.hero__meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:var(--s6);color:var(--ink-3)}
+.hero__meta li{display:flex;align-items:center;gap:8px}
+.hero__meta li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+.js .fade-in{opacity:0;translate:0 16px;transition:opacity var(--d3) var(--ease),translate var(--d3) var(--ease)}
+.js .is-ready .fade-in{opacity:1;translate:0 0}
+.js .is-ready .fade-in.d1{transition-delay:200ms} .js .is-ready .fade-in.d2{transition-delay:320ms} .js .is-ready .fade-in.d3{transition-delay:440ms}
+
+.blueprint{position:relative;border-radius:var(--r3);background:#fff;box-shadow:var(--sh-2);overflow:hidden;
+  transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform 600ms var(--ease)}
+.blueprint__bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-3)}
+.blueprint__dots{display:flex;gap:6px}.blueprint__dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.blueprint__svg{width:100%;height:auto;background:
+  linear-gradient(rgb(31 167 216/.07) 1px,transparent 1px) 0 0/20px 20px,
+  linear-gradient(90deg,rgb(31 167 216/.07) 1px,transparent 1px) 0 0/20px 20px,#FBFCFA}
+.bp-wall{fill:none;stroke:var(--ink);stroke-width:4;stroke-linejoin:round}
+.bp-part{fill:none;stroke:var(--ink-2);stroke-width:1.6}
+.bp-out{fill:none;stroke:var(--ink-3);stroke-width:1.2;stroke-dasharray:4 4}
+.bp-room{font:500 9px var(--f-mono);fill:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+.bp-dim{font:500 8px var(--f-mono);fill:var(--ink-3)}
+.bp-dimline{stroke:var(--ink-3);stroke-width:.8}
+.js .bp-draw{stroke-dasharray:2400;stroke-dashoffset:2400;transition:stroke-dashoffset 1200ms var(--ease-io)}
+.js .is-ready .bp-draw{stroke-dashoffset:0}
+.layer path.wire{fill:none;stroke:var(--lc);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--len,900);stroke-dashoffset:var(--len,900);transition:stroke-dashoffset var(--d4) var(--ease-io)}
+.layer .dev{opacity:0;scale:.4;transform-box:fill-box;transform-origin:center;transition:opacity var(--d2) var(--ease),scale var(--d2) var(--ease-back)}
+.layer .dev *{stroke:var(--lc);fill:#fff;stroke-width:1.8}
+.layer .dev .fill{fill:var(--lc);stroke:none}
+.layer .cone{fill:var(--lc);opacity:.12;stroke:none}
+.layer.is-on path.wire{stroke-dashoffset:0}
+.layer.is-on .dev{opacity:1;scale:1}
+.layer[data-layer="elec"]{--lc:var(--c-elec)} .layer[data-layer="net"]{--lc:var(--c-net)} .layer[data-layer="son"]{--lc:var(--c-son)}
+.layer[data-layer="vid"]{--lc:var(--c-vid)} .layer[data-layer="sec"]{--lc:var(--c-sec)}
+.blueprint__legend{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px;border-top:1px solid var(--line)}
+.chip{--lc:var(--ink);display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:0;border-radius:var(--rp);background:var(--paper);color:var(--ink-2);font-weight:500;font-size:.9rem;box-shadow:inset 0 0 0 1px var(--line);transition:background-color var(--d1),color var(--d1),box-shadow var(--d1)}
+.chip::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--lc);opacity:.35;transition:opacity var(--d1),scale var(--d2) var(--ease-back)}
+.chip[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--lc)}
+.chip[aria-pressed="true"]::before{opacity:1;scale:1.25}
+.chip[data-layer="elec"]{--lc:var(--c-elec)} .chip[data-layer="net"]{--lc:var(--c-net)} .chip[data-layer="son"]{--lc:var(--c-son)}
+.chip[data-layer="vid"]{--lc:var(--c-vid)} .chip[data-layer="sec"]{--lc:var(--c-sec)}
+.blueprint__caption{padding:0 16px 16px;color:var(--ink-2);font-size:.92rem;min-height:3.2em}
+.blueprint__stamp{position:absolute;right:14px;top:56px;padding:6px 8px;border:1.5px solid var(--ink);color:var(--ink);background:#fff;line-height:1.35;font-size:.62rem;pointer-events:none}
+@media (max-width:1000px){
+  .hero__copy,.hero__plan{grid-column:1/-1}
+  .hero__plan{margin-top:var(--s6)}
+}
+@media (max-width:560px){
+  .blueprint__stamp,.blueprint__bar span:last-child{display:none}
+  .tag{flex-wrap:wrap;gap:4px 8px}.tag::after{display:none}
+}
+
+/* =========================================================================
+   KPI
+   ========================================================================= */
+.kpis{border-block:1px solid var(--line);background:rgb(255 255 255/55%)}
+.kpis__list{display:grid;grid-template-columns:repeat(4,1fr)}
+.kpi{padding:clamp(24px,4vw,44px) clamp(12px,2vw,28px);border-left:1px solid var(--line)}
+.kpi:first-child{border-left:0;padding-left:0}
+.kpi__n{display:flex;align-items:baseline;gap:6px;font-family:var(--f-title);font-weight:700;font-size:clamp(2.6rem,1.6rem + 3vw,4.4rem);letter-spacing:-.04em;line-height:1}
+.kpi__n small{font-size:.32em;letter-spacing:0;color:var(--navy)}
+.kpi p{margin-top:10px;color:var(--ink-2);max-width:24ch}
+@media (max-width:820px){.kpis__list{grid-template-columns:1fr 1fr}.kpi:nth-child(3){border-left:0;padding-left:0}.kpi:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* =========================================================================
+   SERVICES — depth cards
+   ========================================================================= */
+.svc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s5)}
+.card-svc{--lc:var(--accent);grid-column:span 2;position:relative;display:flex;flex-direction:column;gap:14px;padding:28px 26px 26px;border-radius:var(--r3);background:#fff;box-shadow:var(--sh-1);
+  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);transition:transform 250ms var(--ease),box-shadow 250ms var(--ease)}
+.card-svc:hover{box-shadow:var(--sh-2)}
+.card-svc:nth-child(4),.card-svc:nth-child(5){grid-column:span 3}
+.card-svc__n{display:flex;align-items:center;justify-content:space-between;color:var(--ink-3)}
+.card-svc__ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:var(--lc);background:color-mix(in srgb,var(--lc) 12%,#fff)}
+.card-svc__ic .icon{width:24px;height:24px}
+.card-svc p{color:var(--ink-2)}
+.card-svc ul{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:14px;border-top:1px dashed var(--line-2)}
+.card-svc li{padding:5px 10px;border-radius:var(--rp);font-size:.82rem;color:var(--ink-2);background:var(--paper)}
+.card-svc::after{content:"";position:absolute;left:26px;right:26px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--lc);transform:scaleX(0);transition:transform var(--d3) var(--ease)}
+.card-svc:hover::after{transform:scaleX(1)}
+.card-svc[data-layer="elec"]{--lc:var(--c-elec)} .card-svc[data-layer="net"]{--lc:var(--c-net)} .card-svc[data-layer="son"]{--lc:var(--c-son)}
+.card-svc[data-layer="vid"]{--lc:var(--c-vid)} .card-svc[data-layer="sec"]{--lc:var(--c-sec)}
+@media (max-width:980px){.svc-grid{grid-template-columns:1fr 1fr}.card-svc,.card-svc:nth-child(4),.card-svc:nth-child(5){grid-column:span 1}.card-svc:nth-child(5){grid-column:1/-1}}
+@media (max-width:600px){.svc-grid{grid-template-columns:1fr}.card-svc:nth-child(5){grid-column:auto}}
+
+/* =========================================================================
+   BEFORE / BEHIND slider
+   ========================================================================= */
+.ba-wrap{grid-column:1/-1}
+.ba{position:relative;aspect-ratio:16/9;border-radius:var(--r3);overflow:hidden;box-shadow:var(--sh-2);background:var(--ink);--pos:50%}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba__front{clip-path:inset(0 0 0 var(--pos))}
+.ba__line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:#fff;pointer-events:none}
+.ba__knob{position:absolute;top:50%;left:var(--pos);width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#fff;box-shadow:var(--sh-2);display:grid;place-items:center;pointer-events:none;color:var(--ink)}
+.ba__lbl{position:absolute;top:16px;padding:8px 12px;border-radius:var(--r1);background:rgb(11 26 51/72%);color:#fff;backdrop-filter:blur(6px)}
+.ba__lbl--l{left:16px} .ba__lbl--r{right:16px}
+.ba input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.ba input:focus-visible+.ba__knob{outline:3px solid var(--accent);outline-offset:3px}
+.ba-note{margin-top:14px;color:var(--ink-3);font-size:.9rem}
+@media (max-width:600px){.ba{aspect-ratio:4/5}}
+
+/* =========================================================================
+   MASONRY + LIGHTBOX
+   ========================================================================= */
+.masonry{columns:3 300px;column-gap:var(--s5)}
+.masonry__item{break-inside:avoid;margin-bottom:var(--s5)}
+.masonry__btn{position:relative;display:block;width:100%;padding:0;border:0;border-radius:var(--r2);overflow:hidden;background:var(--paper-2);text-align:left;box-shadow:var(--sh-1)}
+.masonry__btn img{width:100%;transition:scale 700ms var(--ease)}
+.masonry__btn:hover img{scale:1.04}
+.masonry__cap{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;background:#fff;font-size:.92rem}
+.masonry__cap b{font-weight:600}
+.masonry__cap span{color:var(--ink-3)}
+.lb{width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgb(244 245 240/96%);color:var(--ink)}
+.lb[open]{display:grid;place-items:center;animation:page-in var(--d2) var(--ease)}
+.lb::backdrop{background:transparent}
+.lb figure{margin:0;display:grid;gap:12px;justify-items:center;padding:72px 80px 32px;width:100%}
+.lb img{max-height:calc(100dvh - 180px);width:auto;border-radius:var(--r2);box-shadow:var(--sh-3)}
+.lb figcaption{text-align:center}
+.lb__btn{position:absolute;width:48px;height:48px;border:0;border-radius:50%;background:#fff;box-shadow:var(--sh-1);display:grid;place-items:center}
+.lb__close{top:16px;right:16px}.lb__prev{left:16px;top:50%;translate:0 -50%}.lb__next{right:16px;top:50%;translate:0 -50%}
+@media (max-width:600px){.lb figure{padding:72px 12px 88px}.lb__prev,.lb__next{top:auto;bottom:20px;translate:none}.lb__prev{left:calc(50% - 60px)}.lb__next{right:calc(50% - 60px)}}
+
+/* =========================================================================
+   METHOD — pinned timeline
+   ========================================================================= */
+.tl{display:grid;grid-template-columns:5fr 7fr;gap:clamp(32px,6vw,96px);align-items:start}
+.tl__pin{position:sticky;top:calc(var(--hdr) + 40px)}
+.tl__bar{margin-top:var(--s6);height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.tl__bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));transform:scaleX(var(--p,0));transform-origin:left}
+.tl__count{margin-top:10px;color:var(--ink-3)}
+.tl__steps{display:grid;gap:clamp(48px,14vh,120px);padding-block:8px 10vh}
+.tl__step{display:grid;grid-template-columns:72px 1fr;gap:20px;opacity:.38;transition:opacity var(--d3) var(--ease)}
+.tl__step.is-active{opacity:1}
+.tl__num{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:var(--sh-1);font-family:var(--f-title);font-weight:700;font-size:1.3rem;color:var(--navy)}
+.tl__step h3{margin:14px 0 8px}
+.tl__step p{color:var(--ink-2);max-width:46ch}
+@media (max-width:860px){.tl{grid-template-columns:1fr}.tl__pin{position:static}.tl__steps{gap:40px;padding-bottom:0}}
+
+/* =========================================================================
+   COMPARISON
+   ========================================================================= */
+.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--r3);box-shadow:var(--sh-1);overflow:hidden}
+.cmp th,.cmp td{padding:18px 22px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.cmp thead th{font-family:var(--f-title);font-size:1.05rem;background:var(--paper-2)}
+.cmp thead th:last-child{background:var(--ink);color:#fff}
+.cmp td:last-child{background:rgb(31 167 216/6%);font-weight:500}
+.cmp tbody tr:last-child td,.cmp tbody tr:last-child th{border-bottom:0}
+.cmp tbody th{font-weight:600;width:28%}
+.cmp td{color:var(--ink-2);width:36%}
+.ok,.ko{display:inline-flex;align-items:center;gap:8px}
+.ok::before,.ko::before{content:"";flex:none;width:18px;height:18px;border-radius:50%}
+.ok::before{background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center/12px no-repeat}
+.ko::before{background:var(--line-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E") center/12px no-repeat}
+@media (max-width:700px){
+  .cmp thead{display:none}
+  .cmp,.cmp tbody,.cmp tr,.cmp th,.cmp td{display:block;width:auto}
+  .cmp tr{padding:16px 18px;border-bottom:1px solid var(--line)}
+  .cmp th,.cmp td{padding:4px 0;border:0;background:none!important}
+  .cmp td::before{content:attr(data-h);display:block;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:8px}
+}
+
+/* =========================================================================
+   PLANS (formules)
+   ========================================================================= */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);align-items:stretch}
+.plan-card{position:relative;display:flex;flex-direction:column;gap:16px;padding:32px 28px;border-radius:var(--r3);background:#fff;box-shadow:var(--sh-1);transition:translate var(--d2) var(--ease),box-shadow var(--d2) var(--ease)}
+.plan-card:hover{translate:0 -4px;box-shadow:var(--sh-2)}
+.plan-card--hl{background:var(--ink);color:#fff}
+.plan-card--hl h3,.plan-card--hl .plan-card__price{color:#fff}
+.plan-card.plan-card--hl p:not(.plan-card__price),.plan-card.plan-card--hl li{color:rgb(255 255 255/78%)}
+.plan-card__badge{position:absolute;top:-12px;left:28px;padding:5px 12px;border-radius:var(--rp);background:linear-gradient(90deg,var(--accent),var(--green));color:var(--ink);font-weight:600;font-size:.78rem}
+.plan-card__price{font-family:var(--f-title);font-weight:700;font-size:1.9rem;letter-spacing:-.03em;color:var(--ink)}
+.plan-card__price small{display:block;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.plan-card--hl .plan-card__price small{color:rgb(255 255 255/55%)}
+.plan-card p{color:var(--ink-2)}
+.plan-card ul{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.plan-card--hl ul{border-color:rgb(255 255 255/15%)}
+.plan-card li{display:flex;gap:10px;color:var(--ink-2)}
+.plan-card li::before{content:"";flex:none;width:6px;height:6px;margin-top:.6em;border-radius:2px;background:var(--accent)}
+.plan-card .btn{margin-top:auto}
+.plan-card--hl .btn{--bg:#fff;--fg:var(--ink)}
+@media (max-width:920px){.plans{grid-template-columns:1fr}}
+
+/* =========================================================================
+   TRUST
+   ========================================================================= */
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5)}
+.trust li{padding:24px;border-radius:var(--r2);background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.trust b{display:block;font-family:var(--f-title);font-size:1.05rem;margin:14px 0 6px}
+.trust p{color:var(--ink-2);font-size:.95rem}
+.trust .icon{width:28px;height:28px;color:var(--navy)}
+@media (max-width:900px){.trust{grid-template-columns:1fr 1fr}} @media (max-width:520px){.trust{grid-template-columns:1fr}}
+
+/* =========================================================================
+   FAQ
+   ========================================================================= */
+.faq{display:grid;gap:10px;max-width:880px}
+.faq details{border-radius:var(--r2);background:#fff;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow var(--d1)}
+.faq details[open]{box-shadow:inset 0 0 0 1.5px var(--ink),var(--sh-1)}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 22px;font-weight:600;font-size:1.05rem;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:28px;height:28px;border-radius:50%;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B1A33' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E") center/14px no-repeat;transition:rotate var(--d2) var(--ease)}
+.faq details[open] summary::after{rotate:45deg}
+.faq .faq__a{padding:0 22px 20px;color:var(--ink-2);max-width:70ch}
+
+/* =========================================================================
+   FORM — 3 steps
+   ========================================================================= */
+.contact{display:grid;grid-template-columns:5fr 7fr;gap:clamp(32px,6vw,80px);align-items:start}
+.contact__aside .btn{width:100%;justify-content:flex-start}
+.contact__aside ul{display:grid;gap:10px;margin-top:var(--s6)}
+.form{position:relative;padding:clamp(24px,4vw,40px);border-radius:var(--r3);background:#fff;box-shadow:var(--sh-2)}
+.steps{display:flex;gap:8px;margin-bottom:var(--s6)}
+.steps li{flex:1;display:grid;gap:8px;color:var(--ink-3)}
+.steps li::before{content:"";height:4px;border-radius:4px;background:var(--line);transition:background-color var(--d2)}
+.steps li.is-done::before,.steps li.is-current::before{background:var(--accent)}
+.steps li.is-current{color:var(--ink)}
+.form fieldset{border:0;margin:0;padding:0;display:grid;gap:18px}
+.form legend{font-family:var(--f-title);font-weight:700;font-size:1.4rem;letter-spacing:-.02em;margin-bottom:6px;padding:0}
+.form [data-step]:not(.is-current){display:none}
+.js .form [data-step].is-current{animation:step-in var(--d3) var(--ease)}
+@keyframes step-in{from{opacity:0;translate:16px 0}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{position:relative}
+.chips input{position:absolute;opacity:0;inset:0;margin:0}
+.chips span{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:var(--rp);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink-2);font-weight:500;cursor:pointer;transition:box-shadow var(--d1),background-color var(--d1),color var(--d1)}
+.chips input:checked+span{background:var(--ink);color:#fff;box-shadow:none}
+.chips input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:grid;gap:6px}
+.field label,.field .lbl{font-weight:600;font-size:.92rem}
+.field input,.field select,.field textarea{width:100%;min-height:50px;padding:12px 14px;border-radius:var(--r1);border:1.5px solid var(--line);background:var(--paper);transition:border-color var(--d1),box-shadow var(--d1),background-color var(--d1)}
+.field textarea{min-height:120px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 4px rgb(31 167 216/16%)}
+.field.has-error input,.field.has-error textarea,.field.has-error select{border-color:var(--c-sec)}
+.err{font-size:.85rem;color:#B4232A}
+.err:empty{display:none}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:.9rem;color:var(--ink-2)}
+.consent input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ink);flex:none}
+.form__nav{display:flex;justify-content:space-between;gap:12px;margin-top:var(--s6)}
+.hp{position:absolute;left:-9999px}
+.form__status{margin-top:16px;font-weight:500}
+.form__status:empty{display:none}
+.form__status.ok{color:#2E7D32}.form__status.ko{color:#B4232A}
+.btn[aria-busy="true"]{opacity:.7;pointer-events:none}
+@media (max-width:900px){.contact{grid-template-columns:1fr}}
+@media (max-width:560px){.f-row{grid-template-columns:1fr}}
+
+/* =========================================================================
+   FOOTER
+   ========================================================================= */
+.ftr{padding:clamp(64px,8vw,96px) 0 calc(32px + env(safe-area-inset-bottom));background:var(--ink);color:rgb(255 255 255/70%)}
+.ftr a{text-decoration:none}
+.ftr__top{display:grid;grid-template-columns:5fr 2fr 2fr 3fr;gap:var(--s6);padding-bottom:var(--s7);border-bottom:1px solid rgb(255 255 255/12%)}
+.ftr__claim{font-family:var(--f-title);font-weight:700;font-size:clamp(1.8rem,1.2rem + 1.6vw,2.6rem);letter-spacing:-.03em;line-height:1.1;color:#fff}
+.ftr h3{font:500 .78rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:rgb(255 255 255/45%);margin-bottom:14px}
+.ftr ul{display:grid;gap:2px}
+.ftr ul a{display:inline-block;padding:8px 0;transition:color var(--d1)}
+.ftr ul a:hover{color:#fff}
+.ftr__bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:var(--s5);font-size:.88rem}
+.ftr__bot a{display:inline-block;padding:10px 0}
+.ftr .brand__txt span{color:rgb(255 255 255/50%)} .ftr .brand__txt b{color:#fff}
+@media (max-width:900px){.ftr__top{grid-template-columns:1fr 1fr}.ftr__claim-wrap{grid-column:1/-1}}
+
+/* =========================================================================
+   MOBILE CTA BAR · CONSENT · TOAST
+   ========================================================================= */
+.mbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;display:none;grid-template-columns:1fr 1fr 1.3fr;gap:6px;padding:6px;border-radius:var(--rp);background:rgb(11 26 51/90%);backdrop-filter:blur(12px);box-shadow:var(--sh-3);translate:0 140%;transition:translate var(--d3) var(--ease)}
+.mbar.is-on{translate:0 0}
+.mbar a{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;border-radius:var(--rp);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem}
+.mbar a .icon{width:20px;height:20px}
+.mbar .is-wa .icon{color:var(--wa)}
+.mbar .is-main{background:#fff;color:var(--ink)}
+@media (max-width:760px){.mbar{display:grid} body{padding-bottom:76px}}
+.cookie{position:fixed;left:16px;bottom:16px;z-index:60;width:min(420px,calc(100% - 32px));padding:20px;border-radius:var(--r2);background:#fff;box-shadow:var(--sh-3);font-size:.92rem;color:var(--ink-2)}
+.cookie[hidden]{display:none}
+.cookie b{display:block;color:var(--ink);margin-bottom:6px}
+.cookie__btns{display:flex;gap:8px;margin-top:14px}
+@media (max-width:760px){.cookie{bottom:calc(84px + env(safe-area-inset-bottom))}}
+.toast{position:fixed;left:50%;top:calc(var(--hdr) + 12px);z-index:70;translate:-50% -20px;opacity:0;padding:12px 18px;border-radius:var(--rp);background:var(--ink);color:#fff;font-weight:500;box-shadow:var(--sh-3);pointer-events:none;transition:opacity var(--d2),translate var(--d2) var(--ease)}
+.toast.is-on{opacity:1;translate:-50% 0}
+
+/* =========================================================================
+   REVEAL
+   ========================================================================= */
+.js .rv{opacity:0;translate:0 24px}
+.js .rv.is-in{opacity:1;translate:0 0;transition:opacity var(--d3) var(--ease) var(--dl,0ms),translate var(--d3) var(--ease) var(--dl,0ms)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0ms!important}
+  .js .rv,.js .fade-in{opacity:1;translate:none}
+  .js .hero h1 .ln>span{translate:none}
+  .js .bp-draw{stroke-dashoffset:0}
+  .js .hl{--hlx:1}
+}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<!-- ============================ HEADER ============================ -->
+<header class="hdr" data-hdr>
+  <div class="wrap hdr__in">
+    <a class="brand" href="#top" aria-label="EM Concept, retour en haut">
+      <img src="../assets/img/logo-mark-alpha.png" srcset="../assets/img/logo-mark-alpha.png 1x, ../assets/img/logo-mark-alpha-2x.png 2x" width="62" height="40" alt="">
+      <span class="brand__txt"><b>Concept</b><span>Électricité &amp; Média</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigation principale" data-nav>
+      <ul class="nav__list">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#realisations">Réalisations</a></li>
+        <li><a href="#methode">Méthode</a></li>
+        <li><a href="#formules">Formules</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--ghost btn--sm" href="tel:+33630201018" data-track="phone_click" data-loc="header">
+          <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>06 30 20 10 18
+        </a>
+        <a class="btn btn--wa btn--sm btn--icon" href="https://wa.me/33630201018?text=Bonjour%20EM%20Concept%2C%20je%20vous%20contacte%20depuis%20votre%20site%20pour%20un%20projet%20%3A%20" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp (nouvel onglet)" data-track="whatsapp_click" data-loc="header">
+          <svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>
+        </a>
+        <a class="btn btn--sm btn--hide-md" href="#devis" data-track="cta_click" data-loc="header" data-magnetic>Devis gratuit</a>
+      </div>
+    </nav>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="nav" data-burger><i></i><span class="vh">Menu</span></button>
+  </div>
+</header>
+
+<main id="main">
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top" data-hero>
+  <div class="wrap grid-12 hero__grid">
+    <div class="hero__copy">
+      <p class="mono tag fade-in"><b>Intégrateur</b> son · image · réseau · sécurité</p>
+      <h1><span class="ln"><span>Tout est relié.</span></span><span class="ln"><span>Rien ne <span class="hl">se voit</span>.</span></span></h1>
+      <p class="hero__lead fade-in d1">Home cinéma, sonorisation, TV, caméras, alarme, Wi-Fi et électricité&nbsp;: nous posons toutes les couches techniques de votre maison dans les murs, pas sur les murs. Un seul interlocuteur, depuis 15 ans, dans le Var et les Alpes-Maritimes.</p>
+      <div class="hero__actions fade-in d2">
+        <a class="btn btn--lg" href="#devis" data-track="cta_click" data-loc="hero" data-magnetic>Obtenir mon devis gratuit <svg class="icon icon--go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn--wa btn--lg" href="https://wa.me/33630201018?text=Bonjour%20EM%20Concept%2C%20je%20vous%20contacte%20depuis%20votre%20site%20pour%20un%20projet%20%3A%20" target="_blank" rel="noopener" data-track="whatsapp_click" data-loc="hero">
+          <svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp<span class="vh"> (nouvel onglet)</span>
+        </a>
+      </div>
+      <ul class="hero__meta mono fade-in d3">
+        <li>Visite &amp; devis gratuits</li><li>Var · Alpes-Maritimes</li><li>Réponse rapide</li>
+      </ul>
+    </div>
+
+    <div class="hero__plan fade-in d2">
+      <figure class="blueprint" data-tilt-soft aria-labelledby="bp-title">
+        <div class="blueprint__bar mono"><span class="blueprint__dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="bp-title">Plan de câblage · villa type</span><span>Éch. 1:100</span></div>
+        <svg class="blueprint__svg" viewBox="0 0 620 470" role="img" aria-describedby="bp-desc">
+          <desc id="bp-desc">Plan schématique d'une villa avec salon, cuisine, chambres, bureau, local technique et terrasse. Chaque bouton sous le plan allume une couche technique&nbsp;: électricité, réseau, son, vidéo ou sécurité.</desc>
+          <!-- dimension line -->
+          <g aria-hidden="true">
+            <line class="bp-dimline" x1="40" y1="22" x2="560" y2="22"/><line class="bp-dimline" x1="40" y1="17" x2="40" y2="27"/><line class="bp-dimline" x1="560" y1="17" x2="560" y2="27"/>
+            <text class="bp-dim" x="300" y="18" text-anchor="middle">18,40 m</text>
+          </g>
+          <!-- walls -->
+          <rect class="bp-wall bp-draw" x="40" y="40" width="520" height="340" rx="2"/>
+          <path class="bp-part bp-draw" d="M330 40V200 M40 200H560 M220 200V380 M400 200V380 M40 300H220 M400 300H560 M220 300H260 M300 300H400"/>
+          <path class="bp-out bp-draw" d="M40 398H560V448H40Z"/>
+          <g aria-hidden="true">
+            <text class="bp-room" x="185" y="128" text-anchor="middle">Salon</text>
+            <text class="bp-room" x="445" y="128" text-anchor="middle">Cuisine</text>
+            <text class="bp-room" x="130" y="255" text-anchor="middle">Chambre</text>
+            <text class="bp-room" x="310" y="255" text-anchor="middle">Couloir</text>
+            <text class="bp-room" x="480" y="255" text-anchor="middle">Bureau</text>
+            <text class="bp-room" x="130" y="345" text-anchor="middle">Suite</text>
+            <text class="bp-room" x="310" y="345" text-anchor="middle">Entrée</text>
+            <text class="bp-room" x="480" y="372" text-anchor="middle">Local tech.</text>
+            <text class="bp-room" x="300" y="428" text-anchor="middle">Terrasse · piscine</text>
+          </g>
+
+          <!-- LAYER: Électricité -->
+          <g class="layer" data-layer="elec" aria-hidden="true">
+            <path class="wire" d="M445 335H410V210H185V150 M410 210H445V150 M410 290V255H480 M410 290H220V255H130 M410 335H310V320 M220 335H130"/>
+            <g class="dev"><rect x="434" y="322" width="22" height="28" rx="3"/><path class="fill" d="M447 327l-6 9h5l-2 8 6-10h-5z"/></g>
+            <g class="dev"><circle cx="185" cy="150" r="6"/></g><g class="dev"><circle cx="445" cy="150" r="6"/></g>
+            <g class="dev"><circle cx="480" cy="255" r="5"/></g><g class="dev"><circle cx="130" cy="255" r="5"/></g>
+            <g class="dev"><circle cx="130" cy="335" r="5"/></g><g class="dev"><circle cx="310" cy="320" r="5"/></g>
+          </g>
+          <!-- LAYER: Réseau -->
+          <g class="layer" data-layer="net" aria-hidden="true">
+            <path class="wire" d="M500 335V225H520 M500 300V214H250V95H215 M500 335H540V415H300 M500 225H390V280H130V270 M500 214V70H445"/>
+            <g class="dev"><rect x="488" y="322" width="26" height="30" rx="3"/><path class="fill" d="M493 328h16v3h-16zm0 6h16v3h-16zm0 6h16v3h-16z"/></g>
+            <g class="dev"><circle cx="205" cy="95" r="10"/><path d="M199 95a6 6 0 0 1 12 0M202 95a3 3 0 0 1 6 0"/></g>
+            <g class="dev"><circle cx="520" cy="225" r="9"/><path d="M515 225a5 5 0 0 1 10 0"/></g>
+            <g class="dev"><circle cx="300" cy="415" r="10"/><path d="M294 415a6 6 0 0 1 12 0M297 415a3 3 0 0 1 6 0"/></g>
+            <g class="dev"><circle cx="130" cy="268" r="8"/><path d="M126 268a4 4 0 0 1 8 0"/></g>
+            <g class="dev"><circle cx="445" cy="70" r="8"/><path d="M441 70a4 4 0 0 1 8 0"/></g>
+          </g>
+          <!-- LAYER: Son -->
+          <g class="layer" data-layer="son" aria-hidden="true">
+            <path class="wire" d="M465 350H420V190H185 M80 70H290 M80 70V180H290V70 M185 190V180 M120 190V430H480"/>
+            <g class="dev"><circle cx="80" cy="70" r="9"/><circle class="fill" cx="80" cy="70" r="3"/></g>
+            <g class="dev"><circle cx="290" cy="70" r="9"/><circle class="fill" cx="290" cy="70" r="3"/></g>
+            <g class="dev"><circle cx="80" cy="180" r="9"/><circle class="fill" cx="80" cy="180" r="3"/></g>
+            <g class="dev"><circle cx="290" cy="180" r="9"/><circle class="fill" cx="290" cy="180" r="3"/></g>
+            <g class="dev"><rect x="172" y="176" width="26" height="18" rx="3"/></g>
+            <g class="dev"><circle cx="120" cy="430" r="8"/><circle class="fill" cx="120" cy="430" r="3"/></g>
+            <g class="dev"><circle cx="480" cy="430" r="8"/><circle class="fill" cx="480" cy="430" r="3"/></g>
+          </g>
+          <!-- LAYER: Vidéo -->
+          <g class="layer" data-layer="vid" aria-hidden="true">
+            <path class="wire" d="M494 330V205H185V52 M400 205H360V310H130V322 M494 290H535V300"/>
+            <g class="dev"><rect x="140" y="44" width="90" height="10" rx="2"/></g>
+            <g class="dev"><rect x="104" y="318" width="52" height="8" rx="2"/></g>
+            <g class="dev"><rect x="522" y="300" width="26" height="8" rx="2"/></g>
+          </g>
+          <!-- LAYER: Sécurité -->
+          <g class="layer" data-layer="sec" aria-hidden="true">
+            <path class="wire" d="M515 345H568V32H32V388H568V345 M300 388V368"/>
+            <g class="dev"><path class="cone" d="M32 32l70 22-22 48z"/><circle cx="32" cy="32" r="8"/><circle class="fill" cx="32" cy="32" r="3"/></g>
+            <g class="dev"><path class="cone" d="M568 32l-70 22 22 48z"/><circle cx="568" cy="32" r="8"/><circle class="fill" cx="568" cy="32" r="3"/></g>
+            <g class="dev"><path class="cone" d="M32 388l70-22-22-48z"/><circle cx="32" cy="388" r="8"/><circle class="fill" cx="32" cy="388" r="3"/></g>
+            <g class="dev"><path class="cone" d="M568 388l-70-22 22-48z"/><circle cx="568" cy="388" r="8"/><circle class="fill" cx="568" cy="388" r="3"/></g>
+            <g class="dev"><rect x="288" y="356" width="24" height="16" rx="3"/><path class="fill" d="M293 361h3v3h-3zm5 0h3v3h-3zm5 0h3v3h-3z"/></g>
+          </g>
+        </svg>
+        <div class="blueprint__stamp mono" aria-hidden="true">EM CONCEPT<br>Lot&nbsp;: courants faibles<br>Rév. 02</div>
+        <div class="blueprint__legend" role="group" aria-label="Couches techniques à afficher sur le plan">
+          <button type="button" class="chip" data-layer="elec" aria-pressed="false">Électricité</button>
+          <button type="button" class="chip" data-layer="net" aria-pressed="false">Réseau</button>
+          <button type="button" class="chip" data-layer="son" aria-pressed="false">Son</button>
+          <button type="button" class="chip" data-layer="vid" aria-pressed="false">Vidéo</button>
+          <button type="button" class="chip" data-layer="sec" aria-pressed="false">Sécurité</button>
+        </div>
+        <figcaption class="blueprint__caption" aria-live="polite" data-bp-caption>Allumez une couche&nbsp;: c'est tout ce que nous posons, et que vous ne verrez plus.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ KPIs ============================ -->
+<section class="kpis" aria-label="EM Concept en chiffres">
+  <ul class="wrap kpis__list">
+    <li class="kpi rv"><span class="kpi__n"><span data-count="15">15</span><small>ans</small></span><p>d'intégration son &amp; vidéo</p></li>
+    <li class="kpi rv"><span class="kpi__n"><span data-count="5">5</span><small>métiers</small></span><p>coordonnés par un seul interlocuteur</p></li>
+    <li class="kpi rv"><span class="kpi__n"><span data-count="0">0</span><small>câble</small></span><p>apparent&nbsp;: c'est notre signature</p></li>
+    <li class="kpi rv"><span class="kpi__n">83<small>&amp; 06</small></span><p>le Var et les Alpes-Maritimes</p></li>
+  </ul>
+</section>
+
+<!-- ============================ SERVICES ============================ -->
+<section class="section" id="services" aria-labelledby="svc-t">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>01</b> Services</p>
+      <h2 id="svc-t" class="rv">Cinq couches, une seule installation cohérente.</h2>
+      <p class="rv">Électricien de métier devenu spécialiste des courants faibles, nous concevons chaque couche en pensant aux autres. Résultat&nbsp;: moins de saignées, moins d'intervenants, et un système qui fonctionne comme un tout.</p>
+    </header>
+    <div class="svc-grid">
+      <article class="card-svc rv" data-layer="son" data-tilt>
+        <div class="card-svc__n mono"><span class="card-svc__ic" aria-hidden="true"><svg class="icon"><use href="#i-speaker"/></svg></span>01</div>
+        <h3>Son &amp; home cinéma</h3>
+        <p>Un son qui remplit la pièce, une enceinte qu'on ne voit pas. Dans le salon, la maison entière et jusqu'au bord de la piscine.</p>
+        <ul><li>Home cinéma</li><li>Enceintes encastrées</li><li>Multiroom</li><li>Calibration</li></ul>
+      </article>
+      <article class="card-svc rv" data-layer="vid" data-tilt>
+        <div class="card-svc__n mono"><span class="card-svc__ic" aria-hidden="true"><svg class="icon"><use href="#i-tv"/></svg></span>02</div>
+        <h3>TV &amp; vidéo</h3>
+        <p>L'écran fait partie de l'architecture&nbsp;: fixation affleurante, meuble sur mesure ou lift motorisé, câbles dans le mur.</p>
+        <ul><li>Fixation murale</li><li>Lifts motorisés</li><li>Antenne &amp; satellite</li></ul>
+      </article>
+      <article class="card-svc rv" data-layer="sec" data-tilt>
+        <div class="card-svc__n mono"><span class="card-svc__ic" aria-hidden="true"><svg class="icon"><use href="#i-cam"/></svg></span>03</div>
+        <h3>Caméras &amp; alarme</h3>
+        <p>Votre maison sous les yeux depuis votre téléphone, et une alarme qui réagit avant que vous n'ayez à le faire.</p>
+        <ul><li>Vidéosurveillance IP</li><li>Alarme intrusion</li><li>Visiophone</li></ul>
+      </article>
+      <article class="card-svc rv" data-layer="net" data-tilt>
+        <div class="card-svc__n mono"><span class="card-svc__ic" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span>04</div>
+        <h3>Réseau &amp; Wi-Fi</h3>
+        <p>Le Wi-Fi capte partout, du bureau au pool house, parce que tout part d'une baie de brassage propre, repérée et documentée.</p>
+        <ul><li>Baies de brassage</li><li>Câblage RJ45</li><li>Wi-Fi maillé</li><li>PoE · NAS · onduleur</li></ul>
+      </article>
+      <article class="card-svc rv" data-layer="elec" data-tilt>
+        <div class="card-svc__n mono"><span class="card-svc__ic" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>05</div>
+        <h3>Électricité, la base</h3>
+        <p>Tableau, conformité, rénovation, éclairage LED&nbsp;: le courant fort est posé par le même électricien, pour une installation pensée d'un bloc.</p>
+        <ul><li>Tableaux électriques</li><li>Mise en conformité</li><li>Éclairage LED</li><li>Dépannage</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BEHIND THE WALL ============================ -->
+<section class="section" aria-labelledby="ba-t" style="padding-top:0">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>02</b> Derrière le mur</p>
+      <h2 id="ba-t" class="rv">Ce que vous voyez. Ce que nous posons.</h2>
+      <p class="rv">Faites glisser pour passer du salon fini à l'installation qui le fait vivre, rangée dans une baie au local technique.</p>
+    </header>
+    <div class="ba-wrap rv">
+      <div class="ba" data-ba>
+        <img src="../assets/img/home-cinema-encastre-1280.jpg" srcset="../assets/img/home-cinema-encastre-640.jpg 640w, ../assets/img/home-cinema-encastre-1280.jpg 1280w" sizes="(max-width: 1240px) 100vw, 1240px" width="1280" height="960" loading="lazy" alt="Salon&nbsp;: téléviseur mural entouré d'enceintes encastrées, aucun câble visible">
+        <img class="ba__front" src="../assets/img/baie-reseau-villa-1280.jpg" srcset="../assets/img/baie-reseau-villa-640.jpg 640w, ../assets/img/baie-reseau-villa-1280.jpg 1280w" sizes="(max-width: 1240px) 100vw, 1240px" width="1280" height="1707" loading="lazy" alt="Local technique&nbsp;: baie de brassage avec prises repérées, switchs et enregistreur vidéo">
+        <span class="ba__lbl ba__lbl--l mono">Dans le salon</span>
+        <span class="ba__lbl ba__lbl--r mono">Derrière le mur</span>
+        <span class="ba__line" aria-hidden="true"></span>
+        <input type="range" min="0" max="100" value="50" aria-label="Comparer le salon et le local technique" data-ba-range>
+        <span class="ba__knob" aria-hidden="true"><svg class="icon"><use href="#i-drag"/></svg></span>
+      </div>
+      <p class="ba-note">Deux photos de chantiers réels&nbsp;: le salon et le local technique d'une même logique d'installation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GALLERY ============================ -->
+<section class="section" id="realisations" aria-labelledby="gal-t" style="background:var(--paper-2)">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>03</b> Réalisations</p>
+      <h2 id="gal-t" class="rv">Des chantiers réels, photographiés tels quels.</h2>
+    </header>
+    <ul class="masonry" data-gallery>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/meuble-tv-retroeclaire-1280.jpg"><img src="../assets/img/meuble-tv-retroeclaire-640.jpg" width="640" height="480" loading="lazy" alt="Mur TV sur mesure aux niches rétroéclairées, barre de son et caisson"><span class="masonry__cap"><b>Mur TV rétroéclairé</b><span>Vidéo · Son</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/baie-reseau-villa-1280.jpg"><img src="../assets/img/baie-reseau-villa-640.jpg" width="640" height="853" loading="lazy" alt="Baie réseau de villa, trois panneaux RJ45 repérés"><span class="masonry__cap"><b>Baie réseau de villa</b><span>Réseau · Sécurité</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/chambre-eclairage-led-1280.jpg"><img src="../assets/img/chambre-eclairage-led-640.jpg" width="640" height="480" loading="lazy" alt="Suite parentale avec gorge lumineuse LED et TV murale"><span class="masonry__cap"><b>Suite parentale</b><span>Électricité · Vidéo</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/tableau-electrique-encastre-800.jpg"><img src="../assets/img/tableau-electrique-encastre-640.jpg" width="640" height="1072" loading="lazy" alt="Tableau électrique encastré, circuits étiquetés"><span class="masonry__cap"><b>Tableau encastré</b><span>Électricité</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/tv-escamotable-1280.jpg"><img src="../assets/img/tv-escamotable-640.jpg" width="640" height="480" loading="lazy" alt="TV sortant d'un meuble motorisé en pied de lit"><span class="masonry__cap"><b>TV escamotable</b><span>Vidéo</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/lustre-cage-escalier-1280.jpg"><img src="../assets/img/lustre-cage-escalier-640.jpg" width="640" height="853" loading="lazy" alt="Suspension multi-globes dans une cage d'escalier"><span class="masonry__cap"><b>Cage d'escalier</b><span>Électricité</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/ampli-home-cinema-1280.jpg"><img src="../assets/img/ampli-home-cinema-640.jpg" width="640" height="480" loading="lazy" alt="Ampli home cinéma intégré dans un meuble en chêne"><span class="masonry__cap"><b>Amplification intégrée</b><span>Son</span></span></button></li>
+      <li class="masonry__item rv"><button type="button" class="masonry__btn" data-full="../assets/img/baie-reseau-bureau-1280.jpg"><img src="../assets/img/baie-reseau-bureau-640.jpg" width="640" height="620" loading="lazy" alt="Baie réseau de bureau : switch PoE, NAS, onduleur"><span class="masonry__cap"><b>Baie de bureau</b><span>Réseau</span></span></button></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ METHOD (pinned) ============================ -->
+<section class="section" id="methode" aria-labelledby="tl-t">
+  <div class="wrap tl" data-tl>
+    <div class="tl__pin">
+      <p class="mono tag rv"><b>04</b> Méthode</p>
+      <h2 id="tl-t" class="rv" style="margin-top:16px">Un chantier lisible, de la visite à la mise en service.</h2>
+      <div class="tl__bar" aria-hidden="true"><i></i></div>
+      <p class="tl__count mono" aria-hidden="true"><span data-tl-n>01</span> / 04</p>
+    </div>
+    <ol class="tl__steps">
+      <li class="tl__step"><span class="tl__num" aria-hidden="true">01</span><div><h3>Visite &amp; écoute</h3><p>Sur place, nous relevons l'existant, les passages possibles et vos usages. Vous repartez avec des idées claires, pas avec un catalogue.</p></div></li>
+      <li class="tl__step"><span class="tl__num" aria-hidden="true">02</span><div><h3>Devis détaillé</h3><p>Chaque poste chiffré, chaque appareil nommé. Pas de ligne « divers ». Vous comparez, vous décidez.</p></div></li>
+      <li class="tl__step"><span class="tl__num" aria-hidden="true">03</span><div><h3>Pose propre</h3><p>Câblage repéré, saignées rebouchées, chantier rangé chaque soir. Les couches sont posées dans le bon ordre, par la même équipe.</p></div></li>
+      <li class="tl__step"><span class="tl__num" aria-hidden="true">04</span><div><h3>Mise en service</h3><p>Réglages, calibration, prise en main expliquée, plans remis. Et un numéro qui répond après le chantier.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ COMPARISON ============================ -->
+<section class="section" aria-labelledby="cmp-t" style="padding-top:0">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>05</b> Pourquoi un seul intégrateur</p>
+      <h2 id="cmp-t" class="rv">Un interlocuteur au lieu de quatre.</h2>
+    </header>
+    <div class="rv">
+      <table class="cmp">
+        <caption class="vh">Comparaison entre plusieurs artisans et un intégrateur unique</caption>
+        <thead><tr><th scope="col">Critère</th><th scope="col">Plusieurs artisans</th><th scope="col">EM Concept</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Interlocuteur</th><td data-h="Plusieurs artisans"><span class="ko">Électricien, antenniste, alarmiste, informaticien</span></td><td data-h="EM Concept"><span class="ok">Un seul, du tableau à l'écran</span></td></tr>
+          <tr><th scope="row">Passages de câbles</th><td data-h="Plusieurs artisans"><span class="ko">Chacun ouvre ses propres saignées</span></td><td data-h="EM Concept"><span class="ok">Prévus ensemble, une seule fois</span></td></tr>
+          <tr><th scope="row">Compatibilité</th><td data-h="Plusieurs artisans"><span class="ko">À vérifier entre corps de métier</span></td><td data-h="EM Concept"><span class="ok">Pensée dès la conception</span></td></tr>
+          <tr><th scope="row">Documentation</th><td data-h="Plusieurs artisans"><span class="ko">Éparpillée ou absente</span></td><td data-h="EM Concept"><span class="ok">Plans et repérage remis en fin de chantier</span></td></tr>
+          <tr><th scope="row">En cas de panne</th><td data-h="Plusieurs artisans"><span class="ko">« Ce n'est pas de mon ressort »</span></td><td data-h="EM Concept"><span class="ok">Un numéro, un responsable</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PLANS ============================ -->
+<section class="section" id="formules" aria-labelledby="pl-t" style="background:var(--paper-2)">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>06</b> Formules</p>
+      <h2 id="pl-t" class="rv">Trois périmètres pour commencer.</h2>
+      <p class="rv">Chaque maison est différente&nbsp;: les formules fixent le cadre, la visite fixe le prix. Le devis est gratuit et détaillé.</p>
+    </header>
+    <div class="plans">
+      <article class="plan-card rv">
+        <h3>Essentiel</h3>
+        <p class="plan-card__price"><small>Une pièce</small>Sur devis</p>
+        <p>Pour transformer un salon ou une chambre.</p>
+        <ul><li>TV fixée, câbles dans le mur</li><li>Barre de son ou enceintes encastrées</li><li>Prise réseau dédiée</li></ul>
+        <a class="btn" href="#devis" data-plan="Essentiel" data-track="plan_select">Choisir Essentiel</a>
+      </article>
+      <article class="plan-card plan-card--hl rv">
+        <span class="plan-card__badge">Le plus demandé</span>
+        <h3>Confort</h3>
+        <p class="plan-card__price"><small>Toute la maison</small>Sur devis</p>
+        <p>Le réseau, le son et l'image pensés pour toute la maison.</p>
+        <ul><li>Baie de brassage &amp; Wi-Fi maillé</li><li>Home cinéma + son multiroom</li><li>TV dans les pièces de vie</li><li>Plans et repérage remis</li></ul>
+        <a class="btn" href="#devis" data-plan="Confort" data-track="plan_select" data-magnetic>Choisir Confort</a>
+      </article>
+      <article class="plan-card rv">
+        <h3>Signature</h3>
+        <p class="plan-card__price"><small>Villa complète</small>Sur devis</p>
+        <p>Les cinq couches, de l'électricité à la sécurité.</p>
+        <ul><li>Tout Confort, plus&nbsp;:</li><li>Caméras, alarme, visiophone</li><li>Tableau électrique &amp; éclairage LED</li><li>Extérieurs&nbsp;: terrasse, piscine, portail</li></ul>
+        <a class="btn" href="#devis" data-plan="Signature" data-track="plan_select">Choisir Signature</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TRUST ============================ -->
+<section class="section" aria-labelledby="tr-t">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>07</b> Engagements</p>
+      <h2 id="tr-t" class="rv">Ce sur quoi vous pouvez compter.</h2>
+    </header>
+    <ul class="trust">
+      <li class="rv"><svg class="icon" aria-hidden="true"><use href="#i-doc"/></svg><b>Devis gratuit et détaillé</b><p>Chaque poste et chaque appareil sont nommés.</p></li>
+      <li class="rv"><svg class="icon" aria-hidden="true"><use href="#i-bolt"/></svg><b>Norme NF C 15-100</b><p>Travaux électriques réalisés selon la norme en vigueur.</p></li>
+      <li class="rv"><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><b>Câblage repéré</b><p>Chaque câble étiqueté, plans remis en fin de chantier.</p></li>
+      <li class="rv"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><b>Données protégées</b><p>Vos informations servent uniquement à vous répondre (RGPD).</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="section" id="faq" aria-labelledby="faq-t" style="padding-top:0">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="mono tag rv"><b>08</b> Questions fréquentes</p>
+      <h2 id="faq-t" class="rv">Les réponses avant l'appel.</h2>
+    </header>
+    <div class="faq">
+      <details class="rv"><summary>Dans quelle zone intervenez-vous&nbsp;?</summary><p class="faq__a">Dans tout le Var et les Alpes-Maritimes, depuis Roquebrune-sur-Argens.</p></details>
+      <details class="rv"><summary>Le devis est-il payant&nbsp;?</summary><p class="faq__a">Non. La visite et le devis détaillé sont gratuits et sans engagement.</p></details>
+      <details class="rv"><summary>Pouvez-vous intervenir dans une maison déjà habitée&nbsp;?</summary><p class="faq__a">Oui. Nous étudions les passages existants (gaines, faux-plafonds, combles) pour limiter les saignées, et le chantier est rangé chaque soir.</p></details>
+      <details class="rv"><summary>Faut-il plusieurs artisans pour le son, le réseau et l'électricité&nbsp;?</summary><p class="faq__a">Non. Électricien de métier et intégrateur son et vidéo depuis 15 ans, EM Concept réalise l'ensemble. Un seul interlocuteur, une installation cohérente.</p></details>
+      <details class="rv"><summary>Faites-vous aussi du dépannage&nbsp;?</summary><p class="faq__a">Oui, en électricité comme en courants faibles. Le plus rapide&nbsp;: un appel ou un message WhatsApp avec une photo du problème.</p></details>
+      <details class="rv"><summary>Quelles marques installez-vous&nbsp;?</summary><p class="faq__a">Nous choisissons le matériel selon votre projet et votre budget, et chaque référence est indiquée dans le devis. Vous savez exactement ce qui sera posé.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ QUOTE FORM ============================ -->
+<section class="section" id="devis" aria-labelledby="dv-t" style="background:var(--paper-2)">
+  <div class="wrap contact">
+    <div class="contact__aside">
+      <p class="mono tag rv"><b>09</b> Devis gratuit</p>
+      <h2 id="dv-t" class="rv" style="margin:16px 0">Décrivez votre projet en 1 minute.</h2>
+      <p class="rv" style="font-size:var(--fs-lead);color:var(--ink-2)">Nous vous rappelons pour fixer une visite. Pressé&nbsp;? Appelez ou écrivez directement.</p>
+      <ul class="rv">
+        <li><a class="btn btn--ghost btn--lg" href="tel:+33630201018" data-track="phone_click" data-loc="devis"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>06 30 20 10 18</a></li>
+        <li><a class="btn btn--wa btn--lg" href="https://wa.me/33630201018?text=Bonjour%20EM%20Concept%2C%20je%20vous%20contacte%20depuis%20votre%20site%20pour%20un%20projet%20%3A%20" target="_blank" rel="noopener" data-track="whatsapp_click" data-loc="devis"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>Écrire sur WhatsApp<span class="vh"> (nouvel onglet)</span></a></li>
+        <li><a class="btn btn--ghost btn--lg" href="mailto:e.mconcept83@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>e.mconcept83@gmail.com</a></li>
+      </ul>
+    </div>
+
+    <form class="form rv" action="https://formsubmit.co/e.mconcept83@gmail.com" method="POST" novalidate data-form>
+      <input type="hidden" name="_subject" value="Demande de devis — site EM Concept (variante 02)">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="formule" value="" data-plan-field>
+      <div class="hp" aria-hidden="true"><label for="hp">Ne pas remplir</label><input id="hp" name="_honey" tabindex="-1" autocomplete="off"></div>
+
+      <ol class="steps mono" aria-hidden="true"><li class="is-current">1 · Projet</li><li>2 · Détails</li><li>3 · Contact</li></ol>
+      <p class="vh" aria-live="polite" data-step-announce>Étape 1 sur 3&nbsp;: votre projet</p>
+
+      <fieldset data-step="1" class="is-current">
+        <legend>Quel est votre projet&nbsp;?</legend>
+        <div class="field">
+          <span class="lbl" id="lbl-types">Ce qui vous intéresse <span aria-hidden="true">*</span></span>
+          <div class="chips" role="group" aria-labelledby="lbl-types">
+            <label><input type="checkbox" name="projet[]" value="Son & home cinéma"><span>Son &amp; home cinéma</span></label>
+            <label><input type="checkbox" name="projet[]" value="TV & vidéo"><span>TV &amp; vidéo</span></label>
+            <label><input type="checkbox" name="projet[]" value="Caméras & alarme"><span>Caméras &amp; alarme</span></label>
+            <label><input type="checkbox" name="projet[]" value="Réseau & Wi-Fi"><span>Réseau &amp; Wi-Fi</span></label>
+            <label><input type="checkbox" name="projet[]" value="Électricité"><span>Électricité</span></label>
+            <label><input type="checkbox" name="projet[]" value="Dépannage"><span>Dépannage</span></label>
+          </div>
+          <p class="err" aria-live="polite" data-err="types"></p>
+        </div>
+        <div class="field">
+          <span class="lbl" id="lbl-lieu">Type de lieu</span>
+          <div class="chips" role="radiogroup" aria-labelledby="lbl-lieu">
+            <label><input type="radio" name="lieu" value="Maison / villa" checked><span>Maison / villa</span></label>
+            <label><input type="radio" name="lieu" value="Appartement"><span>Appartement</span></label>
+            <label><input type="radio" name="lieu" value="Local professionnel"><span>Local pro</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset data-step="2">
+        <legend>Quelques détails</legend>
+        <div class="f-row">
+          <div class="field"><label for="f-ville">Ville <span aria-hidden="true">*</span></label><input id="f-ville" name="ville" autocomplete="address-level2" required aria-describedby="e-ville"><p class="err" id="e-ville" aria-live="polite"></p></div>
+          <div class="field"><label for="f-dept">Département</label><select id="f-dept" name="departement"><option>Var (83)</option><option>Alpes-Maritimes (06)</option><option>Autre</option></select></div>
+        </div>
+        <div class="f-row">
+          <div class="field"><label for="f-chantier">Situation</label><select id="f-chantier" name="situation"><option>Construction neuve</option><option>Rénovation</option><option>Maison habitée</option></select></div>
+          <div class="field"><label for="f-delai">Délai souhaité</label><select id="f-delai" name="delai"><option>Dès que possible</option><option>Dans 1 à 3 mois</option><option>Plus tard / je me renseigne</option></select></div>
+        </div>
+        <div class="field"><label for="f-msg">Votre projet en quelques mots</label><textarea id="f-msg" name="message" placeholder="Ex.&nbsp;: home cinéma 5.1 dans le salon, Wi-Fi jusqu'au pool house…"></textarea></div>
+      </fieldset>
+
+      <fieldset data-step="3">
+        <legend>Comment vous joindre&nbsp;?</legend>
+        <div class="f-row">
+          <div class="field"><label for="f-nom">Nom <span aria-hidden="true">*</span></label><input id="f-nom" name="nom" autocomplete="name" required aria-describedby="e-nom"><p class="err" id="e-nom" aria-live="polite"></p></div>
+          <div class="field"><label for="f-tel">Téléphone <span aria-hidden="true">*</span></label><input id="f-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+ .()-]{10,}" aria-describedby="e-tel"><p class="err" id="e-tel" aria-live="polite"></p></div>
+        </div>
+        <div class="field"><label for="f-mail">E-mail</label><input id="f-mail" name="email" type="email" autocomplete="email" aria-describedby="e-mail"><p class="err" id="e-mail" aria-live="polite"></p></div>
+        <label class="consent"><input type="checkbox" name="consentement" value="oui" required aria-describedby="e-consent"><span>J'accepte que mes informations soient utilisées pour être recontacté au sujet de ma demande. <a href="../mentions-legales.html">Voir les mentions légales</a>.</span></label>
+        <p class="err" id="e-consent" aria-live="polite"></p>
+      </fieldset>
+
+      <div class="form__nav">
+        <button type="button" class="btn btn--ghost" data-prev hidden>Retour</button>
+        <button type="button" class="btn" data-next style="margin-left:auto">Continuer <svg class="icon icon--go" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <button type="submit" class="btn" data-submit hidden style="margin-left:auto">Envoyer ma demande</button>
+      </div>
+      <p class="form__status" role="status" aria-live="polite" data-status></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__top">
+      <div class="ftr__claim-wrap">
+        <a class="brand" href="#top" aria-label="EM Concept, retour en haut">
+          <img src="../assets/img/logo-mark-alpha.png" srcset="../assets/img/logo-mark-alpha.png 1x, ../assets/img/logo-mark-alpha-2x.png 2x" width="62" height="40" alt="" loading="lazy">
+          <span class="brand__txt"><b>Concept</b><span>Électricité &amp; Média</span></span>
+        </a>
+        <p class="ftr__claim" style="margin-top:28px">Tout est relié.<br>Rien ne se voit.</p>
+      </div>
+      <nav aria-label="Plan du site"><h3>Plan du site</h3><ul><li><a href="#services">Services</a></li><li><a href="#realisations">Réalisations</a></li><li><a href="#methode">Méthode</a></li><li><a href="#formules">Formules</a></li><li><a href="#faq">FAQ</a></li></ul></nav>
+      <div><h3>Services</h3><ul><li><a href="#services">Son &amp; home cinéma</a></li><li><a href="#services">TV &amp; vidéo</a></li><li><a href="#services">Caméras &amp; alarme</a></li><li><a href="#services">Réseau &amp; Wi-Fi</a></li><li><a href="#services">Électricité</a></li></ul></div>
+      <div><h3>Contact</h3><ul>
+        <li><a href="tel:+33630201018" data-track="phone_click" data-loc="footer">06 30 20 10 18</a></li>
+        <li><a href="https://wa.me/33630201018?text=Bonjour%20EM%20Concept%2C%20je%20vous%20contacte%20depuis%20votre%20site%20pour%20un%20projet%20%3A%20" target="_blank" rel="noopener" data-track="whatsapp_click" data-loc="footer">WhatsApp<span class="vh"> (nouvel onglet)</span></a></li>
+        <li><a href="mailto:e.mconcept83@gmail.com">e.mconcept83@gmail.com</a></li>
+        <li style="padding:8px 0">Roquebrune-sur-Argens<br>Var &amp; Alpes-Maritimes</li>
+      </ul></div>
+    </div>
+    <div class="ftr__bot">
+      <span>© <span data-year>2026</span> E&amp;M Concept · SIREN 934 257 155</span>
+      <span><a href="../mentions-legales.html">Mentions légales &amp; confidentialité</a> · <button type="button" data-cookie-open style="all:unset;cursor:pointer;padding:10px 0;display:inline-block">Gérer les cookies</button></span>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile sticky CTA -->
+<nav class="mbar" aria-label="Contact rapide" data-mbar>
+  <a href="tel:+33630201018" data-track="phone_click" data-loc="mbar"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Appeler</a>
+  <a class="is-wa" href="https://wa.me/33630201018?text=Bonjour%20EM%20Concept%2C%20je%20vous%20contacte%20depuis%20votre%20site%20pour%20un%20projet%20%3A%20" target="_blank" rel="noopener" data-track="whatsapp_click" data-loc="mbar"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+  <a class="is-main" href="#devis" data-track="cta_click" data-loc="mbar">Devis gratuit</a>
+</nav>
+
+<!-- Consent -->
+<div class="cookie" role="dialog" aria-labelledby="ck-t" aria-describedby="ck-d" hidden data-cookie>
+  <b id="ck-t">Mesure d'audience</b>
+  <p id="ck-d">Nous aimerions mesurer anonymement la fréquentation pour améliorer le site. Aucun cookie publicitaire.</p>
+  <div class="cookie__btns"><button type="button" class="btn btn--sm" data-consent="yes">Accepter</button><button type="button" class="btn btn--ghost btn--sm" data-consent="no">Refuser</button></div>
+</div>
+
+<div class="toast" role="status" aria-live="polite" data-toast></div>
+
+<dialog class="lb" aria-label="Photo agrandie" data-lb>
+  <figure><img src="" alt="" data-lb-img><figcaption data-lb-cap></figcaption></figure>
+  <button type="button" class="lb__btn lb__close" aria-label="Fermer" data-lb-close><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+  <button type="button" class="lb__btn lb__prev" aria-label="Photo précédente" data-lb-prev><svg class="icon" aria-hidden="true" style="rotate:180deg"><use href="#i-arrow"/></svg></button>
+  <button type="button" class="lb__btn lb__next" aria-label="Photo suivante" data-lb-next><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+</dialog>
+
+<!-- Icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 20.6 4.7 16A8.9 8.9 0 1 1 8 19.3z"/><path d="M9 8.3c.2-.5.6-.6.9-.6h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .5-.1.6l-.5.6c-.1.2-.1.4 0 .5a6 6 0 0 0 2.6 2.4c.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.3.1.4.3.4.5 0 .5-.2 1.2-.8 1.5-.6.4-1.7.5-3.3-.2a9.4 9.4 0 0 1-4.3-4.3C8.6 10.1 8.7 9 9 8.3z" fill="currentColor" stroke="none"/></g></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-drag" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 6-6 6 6 6M15 6l6 6-6 6"/></symbol>
+  <symbol id="i-speaker" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6" r="1"/></g></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></g></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l3 3v1l-3 3H3z"/><circle cx="8" cy="10.5" r="1.5"/><path d="M6 14v3H3M19 10.5h2"/></g></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.6a10 10 0 0 1 14 0M8.5 16.4a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></g></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></g></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.5"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g></symbol>
+</svg>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const track = (event, data = {}) => window.dataLayer.push({ event, ...data });
+
+  /* ---------- Load: reveal hero ---------- */
+  requestAnimationFrame(() => $('[data-hero]').classList.add('is-ready'));
+  $$('[data-year]').forEach((e) => { e.textContent = new Date().getFullYear(); });
+
+  /* ---------- Header: stuck / hide on read-down / mobile menu ---------- */
+  const hdr = $('[data-hdr]'), nav = $('[data-nav]'), burger = $('[data-burger]'), mbar = $('[data-mbar]');
+  let lastY = scrollY, ticking = false;
+  const onScroll = () => {
+    const y = scrollY, open = nav.classList.contains('is-open');
+    hdr.classList.toggle('is-stuck', y > 10);
+    if (!RM && !open && y > innerHeight * .8 && y > lastY + 6) hdr.classList.add('is-hidden');
+    else if (y < lastY - 6 || open) hdr.classList.remove('is-hidden');
+    mbar.classList.toggle('is-on', y > innerHeight * .6);
+    lastY = y; ticking = false;
+    fx.forEach((f) => f());
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  const setMenu = (o) => {
+    burger.setAttribute('aria-expanded', String(o));
+    burger.querySelector('.vh').textContent = o ? 'Fermer le menu' : 'Menu';
+    nav.classList.toggle('is-open', o); hdr.classList.toggle('is-open', o);
+  };
+  burger.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+  nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); burger.focus(); } });
+
+  /* active nav link */
+  const links = $$('.nav__list a');
+  const spy = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.toggleAttribute('aria-current', a.hash === '#' + e.target.id));
+    links.forEach((a) => { if (a.hasAttribute('aria-current')) a.setAttribute('aria-current', 'true'); });
+  }), { rootMargin: '-45% 0px -50% 0px' });
+  links.forEach((a) => { const s = $(a.hash); if (s) spy.observe(s); });
+
+  /* ---------- Reveal (batched stagger 60 ms) ---------- */
+  const rv = $$('.rv');
+  if (RM) rv.forEach((e) => e.classList.add('is-in'));
+  else {
+    const io = new IntersectionObserver((es) => {
+      es.filter((e) => e.isIntersecting).forEach((e, i) => {
+        e.target.style.setProperty('--dl', Math.min(i, 6) * 60 + 'ms');
+        e.target.classList.add('is-in'); io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    rv.forEach((e) => io.observe(e));
+  }
+
+  /* ---------- Blueprint layers ---------- */
+  const captions = {
+    elec: "Électricité : tableau au local technique, circuits repérés vers chaque pièce.",
+    net: "Réseau : baie de brassage, points d'accès Wi-Fi du bureau jusqu'à la piscine.",
+    son: "Son : enceintes encastrées au plafond du salon, ampli caché, enceintes de terrasse.",
+    vid: "Vidéo : TV murales alimentées depuis la baie, sans un câble apparent.",
+    sec: "Sécurité : quatre caméras d'angle, clavier d'alarme à l'entrée, enregistreur au local technique.",
+    all: "Les cinq couches réunies : tout part du local technique, rien ne se voit dans les pièces."
+  };
+  const layers = $$('.layer'), chips = $$('.chip'), cap = $('[data-bp-caption]');
+  layers.forEach((g) => { const w = $('path.wire', g); if (w) w.style.setProperty('--len', Math.ceil(w.getTotalLength())); });
+  const setLayer = (id, on) => {
+    $(`.layer[data-layer="${id}"]`).classList.toggle('is-on', on);
+    $(`.chip[data-layer="${id}"]`).setAttribute('aria-pressed', String(on));
+    $$(`.layer[data-layer="${id}"] .dev`).forEach((d, i) => { d.style.transitionDelay = on ? `${300 + i * 40}ms` : '0ms'; });
+  };
+  const onCount = () => chips.filter((c) => c.getAttribute('aria-pressed') === 'true').length;
+  let auto = !RM, autoI = 0, autoT;
+  const order = ['elec', 'net', 'son', 'vid', 'sec'];
+  const cycle = () => {
+    if (!auto) return;
+    if (autoI < order.length) { setLayer(order[autoI], true); cap.textContent = captions[order[autoI]]; autoI++; }
+    else { cap.textContent = captions.all; }
+    if (autoI <= order.length) autoT = setTimeout(cycle, autoI === order.length ? 3200 : 2600);
+  };
+  if (RM) { order.forEach((l) => setLayer(l, true)); cap.textContent = captions.all; }
+  else setTimeout(cycle, 1500);
+  chips.forEach((c) => c.addEventListener('click', () => {
+    if (auto) { auto = false; clearTimeout(autoT); order.forEach((l) => setLayer(l, false)); }
+    const id = c.dataset.layer, on = c.getAttribute('aria-pressed') !== 'true';
+    setLayer(id, on);
+    cap.textContent = on ? captions[id] : (onCount() ? 'Couche masquée.' : "Allumez une couche : c'est tout ce que nous posons, et que vous ne verrez plus.");
+    track('layer_toggle', { layer: id, state: on ? 'on' : 'off' });
+  }));
+
+  /* ---------- KPI counters (out-quart 1200 ms) ---------- */
+  const easeQ = (t) => 1 - Math.pow(1 - t, 4);
+  const cio = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; cio.unobserve(e.target);
+    const el = e.target, to = +el.dataset.count;
+    if (RM || to === 0) { el.textContent = to; return; }
+    const t0 = performance.now();
+    const step = (t) => { const p = clamp((t - t0) / 1200); el.textContent = Math.round(to * easeQ(p)); if (p < 1) requestAnimationFrame(step); };
+    el.textContent = 0; requestAnimationFrame(step);
+  }), { threshold: .6 });
+  $$('[data-count]').forEach((e) => cio.observe(e));
+
+  /* ---------- Depth: card tilt + soft tilt of the blueprint ---------- */
+  if (FINE && !RM) {
+    $$('[data-tilt]').forEach((c) => {
+      c.addEventListener('pointermove', (e) => {
+        const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        c.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg'); c.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
+      });
+      c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+    });
+    const bp = $('[data-tilt-soft]');
+    $('[data-hero]').addEventListener('pointermove', (e) => {
+      const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+      bp.style.setProperty('--ry', (x * 6).toFixed(2) + 'deg'); bp.style.setProperty('--rx', (-y * 4).toFixed(2) + 'deg');
+    });
+    /* magnetic buttons */
+    $$('[data-magnetic]').forEach((b) => {
+      b.addEventListener('pointermove', (e) => {
+        const r = b.getBoundingClientRect(); b.classList.remove('is-releasing');
+        b.style.setProperty('--mx', clamp((e.clientX - r.left - r.width / 2) * .2, -6, 6) + 'px');
+        b.style.setProperty('--my', clamp((e.clientY - r.top - r.height / 2) * .3, -6, 6) + 'px');
+      });
+      b.addEventListener('pointerleave', () => { b.classList.add('is-releasing'); b.style.setProperty('--mx', '0px'); b.style.setProperty('--my', '0px'); });
+    });
+  }
+
+  /* ---------- Before / behind slider ---------- */
+  const ba = $('[data-ba]'), range = $('[data-ba-range]');
+  let baTracked = false;
+  range.addEventListener('input', () => {
+    ba.style.setProperty('--pos', range.value + '%');
+    if (!baTracked) { baTracked = true; track('ba_slide', { value: +range.value }); }
+  });
+
+  /* ---------- Gallery lightbox ---------- */
+  const lb = $('[data-lb]'), lbImg = $('[data-lb-img]'), lbCap = $('[data-lb-cap]'), gBtns = $$('.masonry__btn');
+  let gi = 0, opener = null;
+  const show = (i) => {
+    gi = (i + gBtns.length) % gBtns.length; const b = gBtns[gi], t = $('img', b);
+    lbImg.src = b.dataset.full; lbImg.alt = t.alt; lbCap.innerHTML = $('.masonry__cap', b).innerHTML;
+  };
+  gBtns.forEach((b, i) => b.addEventListener('click', () => {
+    opener = b; show(i); lb.showModal(); document.body.style.overflow = 'hidden';
+    track('gallery_open', { item: $('b', b).textContent });
+  }));
+  $('[data-lb-close]').addEventListener('click', () => lb.close());
+  $('[data-lb-prev]').addEventListener('click', () => show(gi - 1));
+  $('[data-lb-next]').addEventListener('click', () => show(gi + 1));
+  lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') show(gi - 1); if (e.key === 'ArrowRight') show(gi + 1); });
+  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', () => { document.body.style.overflow = ''; if (opener) opener.focus(); });
+
+  /* ---------- Pinned method: progress + active step ---------- */
+  const tl = $('[data-tl]'), steps = $$('.tl__step'), bar = $('.tl__bar i'), num = $('[data-tl-n]');
+  const fx = [];
+  fx.push(() => {
+    const r = $('.tl__steps').getBoundingClientRect(), vh = innerHeight;
+    const p = RM ? 1 : clamp((vh * .55 - r.top) / (r.height - vh * .1));
+    bar.style.setProperty('--p', p.toFixed(3));
+    let a = 0; steps.forEach((s, i) => { const sr = s.getBoundingClientRect(); if (sr.top < vh * .6) a = i; });
+    steps.forEach((s, i) => s.classList.toggle('is-active', i === a || RM));
+    num.textContent = String(a + 1).padStart(2, '0');
+  });
+  onScroll();
+
+  /* ---------- Plans → prefill form ---------- */
+  $$('[data-plan]').forEach((b) => b.addEventListener('click', () => {
+    $('[data-plan-field]').value = b.dataset.plan;
+    track('plan_select', { plan: b.dataset.plan });
+    toast(`Formule ${b.dataset.plan} sélectionnée`);
+  }));
+
+  /* ---------- Toast ---------- */
+  const toastEl = $('[data-toast]'); let toastT;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('is-on'), 2600); }
+
+  /* ---------- Generic tracking ---------- */
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('[data-track]');
+    if (a && a.dataset.track !== 'plan_select') track(a.dataset.track, { location: a.dataset.loc || '', label: a.textContent.trim().slice(0, 40) });
+  });
+
+  /* ---------- Multi-step form ---------- */
+  const form = $('[data-form]');
+  const sets = $$('fieldset[data-step]', form), stepLis = $$('.steps li', form);
+  const prev = $('[data-prev]', form), next = $('[data-next]', form), submit = $('[data-submit]', form);
+  const status = $('[data-status]', form), announce = $('[data-step-announce]', form);
+  const names = ['votre projet', 'quelques détails', 'vos coordonnées'];
+  const startedAt = Date.now();
+  let cur = 0;
+  const setErr = (el, msg) => {
+    const f = el.closest('.field'); if (f) f.classList.toggle('has-error', !!msg);
+    if (el.id) el.setAttribute('aria-invalid', String(!!msg));
+    const box = el.getAttribute('aria-describedby') ? document.getElementById(el.getAttribute('aria-describedby')) : null;
+    if (box) box.textContent = msg || '';
+  };
+  const validate = (i) => {
+    let ok = true, first = null;
+    if (i === 0) {
+      const any = $$('input[name="projet[]"]:checked', form).length > 0;
+      $('[data-err="types"]').textContent = any ? '' : 'Choisissez au moins un type de projet.';
+      if (!any) { ok = false; first = $('input[name="projet[]"]', form); }
+    }
+    $$('input[required], select[required], textarea[required]', sets[i]).forEach((el) => {
+      let msg = '';
+      if (el.type === 'checkbox') msg = el.checked ? '' : 'Votre accord est nécessaire pour être recontacté.';
+      else if (!el.value.trim()) msg = 'Ce champ est requis.';
+      else if (!el.checkValidity()) msg = el.type === 'tel' ? 'Numéro de téléphone invalide.' : 'Valeur invalide.';
+      setErr(el, msg); if (msg) { ok = false; first = first || el; }
+    });
+    const mail = $('#f-mail');
+    if (i === 2 && mail.value && !mail.checkValidity()) { setErr(mail, 'Adresse e-mail invalide.'); ok = false; first = first || mail; }
+    if (first) first.focus();
+    return ok;
+  };
+  const go = (i) => {
+    sets[cur].classList.remove('is-current'); cur = i; sets[cur].classList.add('is-current');
+    stepLis.forEach((li, k) => { li.classList.toggle('is-current', k === cur); li.classList.toggle('is-done', k < cur); });
+    prev.hidden = cur === 0; next.hidden = cur === sets.length - 1; submit.hidden = cur !== sets.length - 1;
+    announce.textContent = `Étape ${cur + 1} sur 3 : ${names[cur]}`;
+    const lg = $('legend', sets[cur]); lg.setAttribute('tabindex', '-1'); lg.focus({ preventScroll: true });
+    track('form_step', { step: cur + 1 });
+  };
+  next.addEventListener('click', () => { if (validate(cur)) go(cur + 1); });
+  prev.addEventListener('click', () => go(cur - 1));
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validate(cur)) return;
+    if (form._honey.value || Date.now() - startedAt < 3000) { track('form_submit_error', { reason: 'bot' }); return; }
+    submit.setAttribute('aria-busy', 'true'); status.className = 'form__status'; status.textContent = 'Envoi en cours…';
+    const projects = $$('input[name="projet[]"]:checked', form).map((x) => x.value).join(', ');
+    try {
+      const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) === 'false') throw new Error(data.message || res.status);
+      status.classList.add('ok'); status.textContent = 'Merci ! Votre demande est envoyée. Nous vous rappelons rapidement.';
+      track('form_submit_success', { project: projects }); form.reset(); go(0);
+    } catch (err) {
+      status.classList.add('ko');
+      status.innerHTML = 'L’envoi n’a pas abouti. Appelez le <a href="tel:+33630201018">06 30 20 10 18</a> ou <a href="https://wa.me/33630201018" target="_blank" rel="noopener">écrivez sur WhatsApp</a>.';
+      track('form_submit_error', { reason: String(err.message || err) });
+    } finally { submit.removeAttribute('aria-busy'); }
+  });
+
+  /* ---------- Consent ---------- */
+  const ck = $('[data-cookie]');
+  const getC = () => { try { return localStorage.getItem('emc-consent'); } catch { return null; } };
+  if (!getC()) setTimeout(() => { ck.hidden = false; }, 1800);
+  $$('[data-consent]').forEach((b) => b.addEventListener('click', () => {
+    const v = b.dataset.consent === 'yes' ? 'granted' : 'denied';
+    try { localStorage.setItem('emc-consent', v); } catch {}
+    ck.hidden = true; track('consent_update', { analytics: v });
+  }));
+  $('[data-cookie-open]').addEventListener('click', () => { ck.hidden = false; $('[data-consent="yes"]').focus(); });
+
+  /* ---------- Page transitions (internal links to other pages) ---------- */
+  if (!RM) document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a || a.target || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || url.pathname === location.pathname) return;
+    e.preventDefault(); document.body.classList.add('is-leaving');
+    setTimeout(() => { location.href = url.href; }, 220);
+  });
+})();
+</script>
+</body>
+</html>
