@@ -42,6 +42,9 @@ Règles :
 | 0,55 s + i × 90 ms | Le texte monte | badge, titre ligne par ligne (masque), sous-titre, CTA, carte, indicateur de défilement |
 | 1,0 → 3,2 s | **La lumière s'allume** | rayon du masque de 0 à 170vmax depuis le plafond (`@property --r`, `--ease-in-out`) |
 
+| 1,25 s | Devise « De l'énergie à l'émotion » | « De l'énergie » s'allume en grésillant (1 s, paliers) → trait de courant tracé (2,1 s, 700 ms in-out) → « à l'émotion » révélé de gauche à droite (2,6 s, 1 100 ms out) |
+| 3,8 s puis toutes les 3,6 s | Étincelle | un point lumineux parcourt le trait ; « émotion » s'illumine à son arrivée (halo vert), en pause hors écran |
+
 - Démarre quand la photo est chargée, ou au plus tard à 2,5 s : la page ne reste jamais noire.
 - Interrupteur : lumière éteinte, le curseur devient une lampe de 230 px. Rallumée, la lumière repart du curseur.
 - Défilement : la photo se referme en écran encadré (`clip-path: inset(5% 4% round 32px)` à 100 %), le texte monte de 70 px et s'efface.

@@ -330,12 +330,61 @@ h2 em {
   font-size: max(2.4rem, min(clamp(2.4rem, 1rem + 4.8vw, 6rem), 10svh));
   line-height: .95; color: var(--white); text-wrap: balance;
 }
+/* Devise « De l'énergie à l'émotion » — the site's story in one line:
+   the word "énergie" powers on like a neon, the current runs, "émotion" lights up.
+   Then a spark travels the wire every 3.6 s and the word glows as it arrives. */
 .hero-tagline {
-  display: inline-flex; align-items: center; gap: .8rem; margin-bottom: 1.6rem;
-  font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, .9rem + .5vw, 1.35rem);
-  letter-spacing: .22em; text-transform: uppercase; color: var(--white);
+  --tg-w: clamp(44px, 5vw, 88px);
+  display: flex; flex-wrap: wrap; align-items: center; gap: .35em .7em; margin-bottom: 1.8rem;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(1.1rem, .85rem + 1vw, 1.7rem); line-height: 1.1;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--white);
 }
-.hero-tagline::before { content: ""; width: 40px; height: 2px; border-radius: 2px; background: var(--grad); }
+.tg-a { text-shadow: 0 0 18px rgb(63 182 224 / 35%); }
+.tg-current { position: relative; width: var(--tg-w); height: 2px; border-radius: 2px; background: rgb(255 255 255 / 16%); }
+.tg-current::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--grad);
+  box-shadow: 0 0 10px rgb(63 182 224 / 60%); transform-origin: left;
+}
+.tg-current i {
+  position: absolute; left: -5px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; opacity: 0;
+  background: #fff; box-shadow: 0 0 8px 2px rgb(63 182 224 / 90%), 0 0 22px 6px rgb(163 200 70 / 45%);
+}
+.tg-b {
+  font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500; text-transform: none; letter-spacing: -.01em;
+  font-size: 1.5em; line-height: 1.05; padding: 0 .08em .18em 0; margin-bottom: -.18em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Entrance (after the light comes on) */
+.js .hero .tg-a { opacity: 0; }
+.js .hero .tg-current::before { transform: scaleX(0); }
+.js .hero .tg-b { opacity: 0; clip-path: inset(-.2em 100% -.3em 0); }
+.js .hero.is-ready .tg-a { animation: tg-flicker 1s steps(1, end) 1.25s forwards; }
+.js .hero.is-ready .tg-current::before { transform: scaleX(1); transition: transform 700ms var(--ease-in-out) 2.1s; }
+.js .hero.is-ready .tg-b { opacity: 1; clip-path: inset(-.2em -.2em -.3em 0); transition: opacity 200ms 2.6s, clip-path 1100ms var(--ease-out) 2.6s; }
+@keyframes tg-flicker {
+  0% { opacity: 0; } 8% { opacity: 1; } 14% { opacity: .15; } 22% { opacity: .9; } 28% { opacity: .3; } 40%, 100% { opacity: 1; }
+}
+
+/* Idle loop: spark along the wire, "émotion" glows on arrival */
+.js .hero.is-ready .tg-current i { animation: tg-spark 3.6s var(--ease-in-out) 3.8s infinite; }
+.js .hero.is-ready .tg-b { animation: tg-glow 3.6s ease-out 3.8s infinite; }
+@keyframes tg-spark {
+  0% { opacity: 0; transform: translateX(0) scale(.6); }
+  8% { opacity: 1; transform: translateX(0) scale(1); }
+  55% { opacity: 1; transform: translateX(var(--tg-w)) scale(1); }
+  65%, 100% { opacity: 0; transform: translateX(var(--tg-w)) scale(1.6); }
+}
+@keyframes tg-glow {
+  0%, 50%, 100% { filter: drop-shadow(0 0 0 rgb(108 192 143 / 0%)); }
+  62% { filter: drop-shadow(0 0 14px rgb(108 192 143 / 75%)); }
+}
+.hero.is-offscreen .tg-current i, .hero.is-offscreen .tg-b { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .tg-current i { display: none; }
+  .js .hero .tg-a, .js .hero .tg-b { opacity: 1; clip-path: none; animation: none; }
+  .js .hero .tg-current::before { transform: none; }
+}
 .hero-title .line { display: block; overflow: clip; padding-bottom: .2em; margin-bottom: -.12em; }
 .hero-title .line > * { display: inline-block; }
 .hero-title .line:first-child > * { font-weight: 800; text-transform: uppercase; letter-spacing: -.005em; }
