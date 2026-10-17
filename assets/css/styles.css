@@ -637,12 +637,13 @@ h2 em {
 .gallery-btn { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; position: relative; text-align: left; }
 /* Image layers: `translate` = scroll parallax (JS, --py), `scale` = hover/reveal. Separate properties so they never fight. */
 .gallery-btn { overflow: hidden; }
-.gallery-btn img {
+.gallery-btn img, .gallery-btn video {
   position: absolute; left: 0; top: -6%; width: 100%; height: 112%; object-fit: cover;
   translate: 0 var(--py, 0px);
   transition: scale var(--dur-narrative) var(--ease-out);
 }
 .gallery-btn:hover img, .gallery-btn:focus-visible img { scale: 1.06; }
+.gallery-video { cursor: default; }
 .gallery-btn:focus-visible { outline-offset: -3px; }
 .gallery-cap {
   position: absolute; inset: auto 0 0 0; padding: 2.5rem 1rem .9rem; display: flex; flex-direction: column; gap: .1rem;

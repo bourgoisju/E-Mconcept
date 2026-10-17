@@ -279,13 +279,27 @@
 
   if (gallery && !reduceMotion && finePointer) {
     items.forEach((item) => {
-      const img = $('img', item);
+      const img = $('img, video', item);
       addEffect(item, (r, vh) => {
         const c = clamp((r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2), -1, 1);
         img.style.setProperty('--py', `${(c * r.height * -0.05).toFixed(1)}px`);
       });
     });
   }
+
+  // Gallery videos: play (sped up) only while on screen; first frame only under reduced motion.
+  items.forEach((item) => {
+    const video = $('video[data-speed]', item);
+    if (!video) return;
+    const speed = parseFloat(video.dataset.speed) || 1;
+    const setSpeed = () => { video.defaultPlaybackRate = speed; video.playbackRate = speed; };
+    setSpeed();
+    video.addEventListener('loadedmetadata', setSpeed);
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setSpeed(); video.play().catch(() => {}); } else video.pause();
+    }, { threshold: 0.25 }).observe(item);
+  });
 
   const filters = $('[data-filters]');
   const placePill = () => {
@@ -348,7 +362,7 @@
     let current = 0;
     let opener = null;
     let closing = false;
-    const visible = () => items.filter((i) => !i.hidden).map((i) => $('.gallery-btn', i));
+    const visible = () => items.filter((i) => !i.hidden).map((i) => $('.gallery-btn:not(.gallery-video)', i)).filter(Boolean);
 
     const load = (btn) => {
       const thumb = $('img', btn);
@@ -409,7 +423,7 @@
     };
 
     gallery.addEventListener('click', (e) => {
-      const btn = e.target.closest('.gallery-btn');
+      const btn = e.target.closest('.gallery-btn:not(.gallery-video)');
       if (btn) open(btn);
     });
     $('[data-lb-prev]', lb).addEventListener('click', () => step(-1));
