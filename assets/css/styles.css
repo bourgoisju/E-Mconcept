@@ -35,7 +35,7 @@
   --radius-lg: 22px;
   --shadow: 0 1px 2px rgb(11 26 51 / 6%), 0 8px 24px -8px rgb(11 26 51 / 18%);
   --shadow-lg: 0 24px 60px -20px rgb(11 26 51 / 40%);
-  --header-h: 88px;
+  --header-h: 104px;
 
   /* Motion tokens — see docs/motion-system.md
      Durations: micro (hover/press) → UI (menus, pills) → component (cards, images) → narrative (headings, sections) → cinematic (hero). */
@@ -108,7 +108,7 @@ h2 em {
   font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500;
   text-transform: none; letter-spacing: -.015em; color: var(--navy); padding-right: .04em;
 }
-.section-dark h2 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.section-dark h2 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .18em; margin-bottom: -.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
 .grad {
   background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -163,8 +163,8 @@ h2 em {
 .site-header.is-scrolled::before, .site-header.is-open::before, .site-header.is-solid::before { opacity: 0; }
 .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
-.brand img { width: 104px; height: auto; }
-@media (max-width: 860px) { .brand img { width: 84px; } }
+.brand img { width: 150px; height: auto; }
+@media (max-width: 860px) { :root { --header-h: 92px; } .brand img { width: 112px; } }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .brand-text small { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
@@ -342,7 +342,10 @@ h2 em {
 .hero-title em {
   font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500; letter-spacing: -.02em;
   font-size: .86em; line-height: 1.05; padding-right: .08em;
+  /* background-clip:text only paints inside the box: extend it so descenders (g, p, j) get the gradient too */
+  padding-bottom: .18em; margin-bottom: -.18em;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .hero-lead { font-size: var(--fs-lead); max-width: 54ch; color: rgb(255 255 255 / 78%); margin-bottom: 2.2rem; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; }
@@ -756,7 +759,7 @@ h2 em {
 
 .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; align-items: center; padding-top: 2.25rem; }
 .footer-brand { display: flex; align-items: center; gap: 1.1rem; text-decoration: none; line-height: 1.5; }
-.footer-brand img { width: 96px; height: auto; }
+.footer-brand img { width: 130px; height: auto; }
 .footer-links { display: grid; gap: .4rem; }
 .footer-links a:hover { color: var(--white); }
 .footer-copy { text-align: right; line-height: 1.6; }
