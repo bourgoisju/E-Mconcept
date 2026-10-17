@@ -808,7 +808,7 @@ h2 em {
 
 .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; align-items: center; padding-top: 2.25rem; }
 .footer-brand { display: flex; align-items: center; gap: 1.1rem; text-decoration: none; line-height: 1.5; }
-.footer-brand img { width: 170px; height: auto; }
+.footer-brand img { width: 120px; height: auto; flex: none; padding: 8px; background: var(--white); border-radius: 14px; box-sizing: content-box; }
 .footer-links { display: grid; gap: .4rem; }
 .footer-links a:hover { color: var(--white); }
 .footer-copy { text-align: right; line-height: 1.6; }
