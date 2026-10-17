@@ -211,15 +211,18 @@
   if (svcList && preview && finePointer && !reduceMotion && window.matchMedia('(min-width: 901px)').matches) {
     const track = $('.svc-preview-track', preview);
     const rows = $$('.svc', svcList);
+    // Only rows that have a photo get a floating preview; the others show nothing.
     const frames = rows.map((row) => {
+      const src = $('.svc-img', row);
+      if (!src) return null;
       const img = document.createElement('img');
-      img.src = $('.svc-img', row).src;
+      img.src = src.currentSrc || src.src;
       img.alt = '';
       img.decoding = 'async';
       track.append(img);
       return img;
     });
-    let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false;
+    let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false, current = -1;
     const tick = () => {
       const dx = tx - x;
       x += dx * 0.18;
@@ -229,19 +232,25 @@
       preview.style.setProperty('--rot', `${clamp(dx * 0.06, -6, 6).toFixed(2)}deg`);
       raf = (on || Math.abs(dx) > 0.5) ? requestAnimationFrame(tick) : 0;
     };
+    const show = (visible) => {
+      on = visible;
+      preview.classList.toggle('is-on', visible);
+      if (visible && !raf) raf = requestAnimationFrame(tick);
+    };
     rows.forEach((row, i) => {
-      row.addEventListener('pointerenter', () => frames.forEach((f, j) => f.classList.toggle('is-current', i === j)));
+      row.addEventListener('pointerenter', (e) => {
+        current = i;
+        frames.forEach((f) => { if (f) f.classList.toggle('is-current', f === frames[i]); });
+        if (frames[i] && !on) { x = tx = e.clientX; y = ty = e.clientY; }
+        show(!!frames[i]);
+      });
     });
-    svcList.addEventListener('pointerenter', (e) => {
-      x = tx = e.clientX; y = ty = e.clientY;
-      on = true;
-      preview.classList.add('is-on');
-      if (!raf) raf = requestAnimationFrame(tick);
+    svcList.addEventListener('pointermove', (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!on && frames[current]) show(true);
     });
-    svcList.addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; });
-    svcList.addEventListener('pointerleave', () => { on = false; preview.classList.remove('is-on'); });
-    window.addEventListener('scroll', () => { if (on) { on = false; preview.classList.remove('is-on'); } }, { passive: true });
-    svcList.addEventListener('pointermove', () => { if (!on) { on = true; preview.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(tick); } });
+    svcList.addEventListener('pointerleave', () => { current = -1; show(false); });
+    window.addEventListener('scroll', () => { if (on) show(false); }, { passive: true });
   }
 
   /* ---------- Magnetic CTAs: follow the pointer a few pixels, spring back ---------- */
