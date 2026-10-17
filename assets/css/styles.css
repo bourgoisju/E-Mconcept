@@ -35,7 +35,7 @@
   --radius-lg: 22px;
   --shadow: 0 1px 2px rgb(11 26 51 / 6%), 0 8px 24px -8px rgb(11 26 51 / 18%);
   --shadow-lg: 0 24px 60px -20px rgb(11 26 51 / 40%);
-  --header-h: 72px;
+  --header-h: 88px;
 
   /* Motion tokens — see docs/motion-system.md
      Durations: micro (hover/press) → UI (menus, pills) → component (cards, images) → narrative (headings, sections) → cinematic (hero). */
@@ -163,7 +163,8 @@ h2 em {
 .site-header.is-scrolled::before, .site-header.is-open::before, .site-header.is-solid::before { opacity: 0; }
 .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
-.brand img { width: 70px; height: auto; }
+.brand img { width: 104px; height: auto; }
+@media (max-width: 860px) { .brand img { width: 84px; } }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .brand-text small { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
@@ -239,7 +240,7 @@ h2 em {
 }
 
 /* ---------- Hero ----------
-   Concept: « Tout se voit. Rien ne dépasse. »
+   Signature: « L'électricité pour base, la technologie pour signature. De l'énergie à l'émotion. »
    --r  radius of the light (animated, registered below)
    --lx/--ly  light origin, --sp  scroll progress 0→1, --tx/--ty  pointer parallax */
 @property --r { syntax: "<length>"; inherits: true; initial-value: 0px; }
@@ -322,12 +323,20 @@ h2 em {
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: live 2.2s infinite; }
 @keyframes live { 0% { box-shadow: 0 0 0 0 rgb(163 200 70 / 65%); } 70%, 100% { box-shadow: 0 0 0 10px rgb(163 200 70 / 0%); } }
 
+/* Signature: « L'électricité pour base, la technologie pour signature. » — longer than the old slogan,
+   so the scale is a step smaller and lines may wrap inside their mask. */
 .hero-title {
-  display: grid; gap: .05em; margin-bottom: 1.6rem;
-  font-size: max(3rem, min(clamp(3rem, 1.2rem + 7.6vw, 8.6rem), 13svh));
-  line-height: .92; color: var(--white);
+  display: grid; gap: .08em; margin-bottom: 1.25rem; max-width: 17ch;
+  font-size: max(2.4rem, min(clamp(2.4rem, 1rem + 4.8vw, 6rem), 10svh));
+  line-height: .95; color: var(--white); text-wrap: balance;
 }
-.hero-title .line { display: block; overflow: clip; padding-bottom: .08em; }
+.hero-tagline {
+  display: inline-flex; align-items: center; gap: .8rem; margin-bottom: 1.6rem;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, .9rem + .5vw, 1.35rem);
+  letter-spacing: .22em; text-transform: uppercase; color: var(--white);
+}
+.hero-tagline::before { content: ""; width: 40px; height: 2px; border-radius: 2px; background: var(--grad); }
+.hero-title .line { display: block; overflow: clip; padding-bottom: .2em; margin-bottom: -.12em; }
 .hero-title .line > * { display: inline-block; }
 .hero-title .line:first-child > * { font-weight: 800; text-transform: uppercase; letter-spacing: -.005em; }
 .hero-title em {
@@ -747,7 +756,7 @@ h2 em {
 
 .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; align-items: center; padding-top: 2.25rem; }
 .footer-brand { display: flex; align-items: center; gap: 1.1rem; text-decoration: none; line-height: 1.5; }
-.footer-brand img { width: 60px; height: auto; }
+.footer-brand img { width: 96px; height: auto; }
 .footer-links { display: grid; gap: .4rem; }
 .footer-links a:hover { color: var(--white); }
 .footer-copy { text-align: right; line-height: 1.6; }
