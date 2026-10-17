@@ -35,7 +35,7 @@
   --radius-lg: 22px;
   --shadow: 0 1px 2px rgb(11 26 51 / 6%), 0 8px 24px -8px rgb(11 26 51 / 18%);
   --shadow-lg: 0 24px 60px -20px rgb(11 26 51 / 40%);
-  --header-h: 148px;
+  --header-h: 96px;
 
   /* Motion tokens — see docs/motion-system.md
      Durations: micro (hover/press) → UI (menus, pills) → component (cards, images) → narrative (headings, sections) → cinematic (hero). */
@@ -162,9 +162,9 @@ h2 em {
 }
 .site-header.is-scrolled::before, .site-header.is-open::before, .site-header.is-solid::before { opacity: 0; }
 .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; align-self: flex-start; margin-top: 8px; transform-origin: left top; }
 .brand img { width: 200px; height: auto; }
-@media (max-width: 860px) { :root { --header-h: 112px; } .brand img { width: 140px; } }
+@media (max-width: 860px) { :root { --header-h: 84px; } .brand img { width: 140px; } }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .brand-text small { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
@@ -250,7 +250,7 @@ h2 em {
   position: relative; isolation: isolate;
   min-height: max(680px, 100svh);
   display: grid; align-items: end;
-  padding: calc(var(--header-h) + .5rem) 0 clamp(5.5rem, 12vh, 8rem);
+  padding: calc(var(--header-h) + 3rem) 0 clamp(5.5rem, 12vh, 8rem);
   color: var(--white); background: #050b17;
   overflow: clip;
   transition: --r 2.2s cubic-bezier(.65, 0, .35, 1);
@@ -868,14 +868,12 @@ h2 em {
 .section-dark { clip-path: inset(0 calc((1 - var(--enter, 1)) * 4vw) round calc((1 - var(--enter, 1)) * 40px)); }
 
 /* 3. Header: tucks away while reading down, returns on the slightest scroll up */
-.site-header { transition: background-color .35s, box-shadow .35s, color .35s, height var(--dur-ui) var(--ease-in-out), translate var(--dur-ui) var(--ease-in-out); }
-/* Big logo at the top of the page; once reading, the bar tightens so it does not eat the screen. */
-.brand img { transition: width var(--dur-ui) var(--ease-in-out); }
-.site-header.is-scrolled { height: 96px; }
-.site-header.is-scrolled .brand img, .site-header.is-solid .brand img { width: 130px; }
-.site-header.is-solid { height: 96px; }
-.site-header.is-open, .site-header.is-scrolled.is-open { height: var(--header-h); }
-@media (max-width: 860px) { .site-header.is-scrolled { height: 84px; } .site-header.is-scrolled .brand img { width: 104px; } }
+.site-header { transition: background-color .35s, box-shadow .35s, color .35s, translate var(--dur-ui) var(--ease-in-out); }
+/* Logo: big at the top of the page, scaled down once reading. Only `transform` animates
+   (compositor-only, no layout), so the shrink stays fluid; the bar height never changes. */
+.brand { transition: transform var(--dur-ui) var(--ease-in-out); will-change: transform; }
+.site-header.is-scrolled .brand, .site-header.is-solid .brand, .site-header.is-open .brand { transform: scale(.65); }
+@media (max-width: 860px) { .site-header.is-scrolled .brand, .site-header.is-solid .brand, .site-header.is-open .brand { transform: scale(.74); } }
 .site-header.is-hidden { translate: 0 -100%; }
 
 /* 4. Buttons: light sheen on hover, physical press, magnetic primary CTAs (JS: --mx/--my) */
