@@ -301,55 +301,6 @@
     }, { threshold: 0.25 }).observe(item);
   });
 
-  const filters = $('[data-filters]');
-  const placePill = () => {
-    const active = filters && $('.filter.is-active', filters);
-    if (!active) return;
-    filters.style.setProperty('--fx', `${active.offsetLeft}px`);
-    filters.style.setProperty('--fy', `${active.offsetTop}px`);
-    filters.style.setProperty('--fw', `${active.offsetWidth}px`);
-    filters.style.setProperty('--fh', `${active.offsetHeight}px`);
-  };
-  if (filters) {
-    placePill();
-    filters.classList.add('has-indicator');
-    window.addEventListener('resize', placePill);
-    if (document.fonts) document.fonts.ready.then(placePill);
-  }
-
-  const applyFilter = (f) => {
-    const before = new Map(items.filter((i) => !i.hidden).map((i) => [i, i.getBoundingClientRect()]));
-    items.forEach((item) => { item.hidden = !(f === 'all' || item.dataset.cat.split(' ').includes(f)); });
-    const count = $('[data-gallery-count]');
-    if (count) count.textContent = items.filter((i) => !i.hidden).length;
-    if (reduceMotion) return;
-    items.filter((i) => !i.hidden).forEach((item, i) => {
-      const old = before.get(item);
-      item.classList.remove('is-entering');
-      if (old) {
-        const now = item.getBoundingClientRect();
-        const dx = old.left - now.left;
-        const dy = old.top - now.top;
-        if (dx || dy) {
-          item.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
-            { duration: 600, easing: EASE_IN_OUT });
-        }
-      } else {
-        item.style.animationDelay = `${Math.min(i, 6) * STAGGER}ms`;
-        void item.offsetWidth;
-        item.classList.add('is-entering');
-      }
-    });
-  };
-
-  $$('[data-filter]').forEach((btn, _, all) => {
-    btn.addEventListener('click', () => {
-      all.forEach((b) => { const on = b === btn; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on)); });
-      placePill();
-      applyFilter(btn.dataset.filter);
-    });
-  });
-
   /* =========================================================
      Lightbox: the photo grows out of its thumbnail (FLIP) and
      shrinks back into it on close. Thumbnail first, full-res swap
@@ -369,7 +320,7 @@
       img.style.setProperty('--ar', (thumb.naturalWidth / thumb.naturalHeight) || 4 / 3);
       img.src = thumb.currentSrc || thumb.src;
       img.alt = thumb.alt;
-      cap.innerHTML = $('.gallery-cap', btn).innerHTML;
+      cap.innerHTML = $('.gallery-cap', btn.closest('.gallery-item')).innerHTML;
       const full = new Image();
       full.src = btn.dataset.full;
       full.decode().then(() => { if (visible()[current] === btn) img.src = full.src; }).catch(() => {});

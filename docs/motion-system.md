@@ -13,7 +13,7 @@ Code : `assets/css/styles.css` (jetons + section « Motion system ») et `assets
 | Jeton | Valeur | Usage |
 |---|---|---|
 | `--dur-micro` | 160 ms | couleur au survol, label de champ |
-| `--dur-ui` | 320 ms | pastille de filtre, menu, en-tête, soulignés |
+| `--dur-ui` | 320 ms | menu, en-tête, soulignés |
 | `--dur-component` | 600 ms | cartes, nœuds d'étapes, entrée galerie |
 | `--dur-narrative` | 950 ms | titres, textes, zoom photo |
 | `--dur-cinematic` | 1400 ms | rideau photo, hero |
@@ -28,7 +28,7 @@ Code : `assets/css/styles.css` (jetons + section « Motion system ») et `assets
 
 Règles :
 - Une sortie dure environ 60 % de son entrée.
-- On n'anime que `transform` / `translate` / `scale`, `opacity` et `clip-path`. Jamais `top`, `width` ni `height` (sauf la largeur de la pastille de filtre, sur un seul élément).
+- On n'anime que `transform` / `translate` / `scale`, `opacity` et `clip-path`. Jamais `top`, `width` ni `height`.
 - `translate` sert au défilement et à l'apparition, `scale` au survol : propriétés séparées, donc jamais en conflit.
 
 ---
@@ -85,7 +85,6 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 - **Visionneuse (FLIP)** : la photo grandit depuis sa vignette, recadrée par `clip-path` pour que le cadrage reste identique. 700 ms, in-out. La vignette déjà chargée sert d'image de départ ; la version HD la remplace une fois décodée, donc l'animation n'attend jamais le réseau.
 - **Fermeture** : la photo retourne dans sa vignette en 520 ms pendant que le fond s'efface. Si la vignette n'est plus à l'écran, simple fondu.
 - **Suivante / précédente** : sortie de 40 px (180 ms, in), entrée depuis l'autre côté (380 ms, out). Glissement de doigt à partir de 50 px.
-- **Filtres** : les photos restantes glissent vers leur nouvelle place (FLIP, 600 ms, in-out), les nouvelles apparaissent en fondu depuis 94 % de leur taille, décalées.
 
 ## 7. Survols et micro-interactions
 
@@ -93,14 +92,12 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 |---|---|
 | Bouton principal | reflet lumineux qui balaie le bouton (750 ms), flèche décalée de 4 px, enfoncement de 97 % au clic (90 ms) |
 | CTA magnétiques (`data-magnetic`) | suivent le pointeur (±8 px / ±6 px), reviennent avec `--ease-back` |
-| Pastille de filtre | une seule pastille blanche glisse sous le filtre actif (320 ms, in-out) |
 | Index des services | le titre glisse de 0,35 em, le numéro passe en bleu, le courant se dessine sous la ligne (600 ms, in-out) ; la réalisation correspondante flotte sous le curseur (suivi lissé à 18 % par image, inclinaison de ±6° selon la vitesse, fondu enchaîné entre photos) |
 | Numéro de téléphone (pied de page) | le dégradé remplit le texte de gauche à droite (950 ms, in-out), la flèche avance |
-| Photos | zoom de 1,06 (950 ms), légende qui monte |
+| Photos | zoom de 1,06 (950 ms) ; la légende, placée sous la photo, apparaît en fondu après le rideau |
 | Liens texte | soulignement qui se dessine depuis la gauche |
 | Champs (contact sombre) | simple trait ; au focus, le courant se dessine le long du trait (600 ms, in-out) et le label passe en cyan |
 | Photos de la galerie | étalonnage commun au repos (contraste +6 %, saturation −14 %, légère chaleur) ; au survol, la photo d'origine revient, comme si la lumière s'allumait (600 ms) |
-| Compteur de la galerie | le nombre de réalisations suit le filtre, annoncé aux lecteurs d'écran |
 | Envoi du formulaire | trois points qui pulsent pendant l'envoi ; succès : coche dégradée qui apparaît avec un léger rebond ; erreur : secousse de 420 ms |
 | Barre de contact mobile (Appeler / WhatsApp) | fixe, sans animation en boucle ; enfoncement de 96 % au toucher (90 ms) |
 | Pastille WhatsApp (hero) | fond vert à 14 % et contour vert au survol ; étiquette « WhatsApp » qui monte de 4 px |
@@ -109,7 +106,7 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 
 - Tout s'affiche directement dans son état final : texte, photos, étapes allumées, courant à 100 %.
 - Pas d'intro : la photo est éclairée d'emblée. Pas de parallaxe, d'effet magnétique, de cadrage au défilement, de grain ni de masquage de l'en-tête.
-- La visionneuse et les filtres changent d'état sans animation.
+- La visionneuse change d'état sans animation ; la vidéo de la galerie reste sur sa première image.
 - L'interrupteur et le mode lampe restent utilisables : c'est une action choisie, pas un mouvement imposé.
 
 ## 9. Performance
