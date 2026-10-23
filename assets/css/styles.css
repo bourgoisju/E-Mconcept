@@ -554,8 +554,8 @@ h2 em {
 
 /* Floating preview (desktop, fine pointer). JS moves it with --x/--y and tilts it with --rot. */
 .svc-preview {
-  position: fixed; left: 0; top: 0; z-index: 30; width: clamp(220px, 20vw, 300px); aspect-ratio: 4 / 5;
-  border-radius: 18px; overflow: hidden; pointer-events: none; background: var(--ink-800);
+  position: fixed; left: 0; top: 0; z-index: 30; width: clamp(160px, 14vw, 210px); aspect-ratio: 4 / 5;
+  border-radius: 14px; overflow: hidden; pointer-events: none; background: var(--ink-800);
   box-shadow: 0 40px 80px -30px rgb(11 26 51 / 55%);
   translate: calc(var(--x, 0px) - 50%) calc(var(--y, 0px) - 50%); rotate: var(--rot, 0deg);
   opacity: 0; scale: .7;
