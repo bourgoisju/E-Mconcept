@@ -871,18 +871,25 @@ h2 em {
 .js .eyebrow.reveal::before { scale: 0 1; transform-origin: left; }
 .js .eyebrow.reveal.is-visible::before { scale: 1 1; transition: scale var(--dur-component) var(--ease-in-out) calc(var(--delay, 0s) + 120ms); }
 
-/* 1c. Photos: curtain wipe from the bottom, image settles from 1.18 → 1 */
+/* 1c. Photos: each one switches on like a screen — a bright point stretches into a line,
+   the line opens into the picture, and the overexposed image settles to its true colours. */
 .js .reveal--curtain { opacity: 1; translate: none; background: transparent; }
-.js .reveal--curtain .gallery-btn { clip-path: inset(100% 0 0 0 round var(--radius)); background: var(--ink-800); }
-.js .reveal--curtain img { scale: 1.18; }
+.js .reveal--curtain .gallery-btn { clip-path: inset(50% 50% 50% 50% round 2px); background: var(--ink-800); }
+.js .reveal--curtain :is(img, video) { scale: 1.1; }
 .js .reveal--curtain.is-visible .gallery-btn {
   clip-path: inset(0 0 0 0 round var(--radius));
-  transition: clip-path var(--dur-cinematic) var(--ease-in-out) var(--delay, 0s);
+  animation: screen-on 1200ms var(--ease-in-out) var(--delay, 0s) both;
 }
-.js .reveal--curtain.is-visible img { scale: 1; transition: scale var(--dur-cinematic) var(--ease-out) var(--delay, 0s); }
+@keyframes screen-on {
+  0%   { clip-path: inset(calc(50% - 1px) 50% calc(50% - 1px) 50% round 2px); filter: brightness(3) saturate(0); }
+  30%  { clip-path: inset(calc(50% - 1px) 0 calc(50% - 1px) 0 round 2px); filter: brightness(3) saturate(0); }
+  70%  { filter: brightness(1.5) saturate(.6); }
+  100% { clip-path: inset(0 0 0 0 round var(--radius)); filter: brightness(1) saturate(1); }
+}
+.js .reveal--curtain.is-visible :is(img, video) { scale: 1; transition: scale var(--dur-cinematic) var(--ease-out) calc(var(--delay, 0s) + 300ms); }
 .js .reveal--curtain.is-visible .gallery-btn:hover img { scale: 1.06; transition-delay: 0s; transition-duration: var(--dur-narrative); }
 .js .reveal--curtain .gallery-cap { opacity: 0; translate: 0 10px; }
-.js .reveal--curtain.is-visible .gallery-cap { opacity: 1; translate: none; transition: opacity var(--dur-component) var(--ease-out) calc(var(--delay, 0s) + 350ms), translate var(--dur-component) var(--ease-out) calc(var(--delay, 0s) + 350ms); }
+.js .reveal--curtain.is-visible .gallery-cap { opacity: 1; translate: none; transition: opacity var(--dur-component) var(--ease-out) calc(var(--delay, 0s) + 800ms), translate var(--dur-component) var(--ease-out) calc(var(--delay, 0s) + 800ms); }
 
 /* 2. Section transition: dark sections open from a framed screen (mirror of the hero closing) */
 .section-dark { clip-path: inset(0 calc((1 - var(--enter, 1)) * 4vw) round calc((1 - var(--enter, 1)) * 40px)); }
@@ -964,7 +971,8 @@ h2 em {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   .js .reveal, .js .reveal--mask .mask-inner, .js .reveal--curtain .gallery-btn, .js .reveal--curtain .gallery-cap { opacity: 1; translate: none; clip-path: none; }
-  .js .reveal--curtain img { scale: 1; }
+  .js .reveal--curtain :is(img, video) { scale: 1; }
+  .js .reveal--curtain.is-visible .gallery-btn { animation: none; }
   .js .eyebrow.reveal::before { scale: 1 1; }
   .section-dark { clip-path: none; }
   .hero-grain { animation: none; }

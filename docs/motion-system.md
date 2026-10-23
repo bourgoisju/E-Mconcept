@@ -16,13 +16,13 @@ Code : `assets/css/styles.css` (jetons + section « Motion system ») et `assets
 | `--dur-ui` | 320 ms | menu, en-tête, soulignés |
 | `--dur-component` | 600 ms | cartes, nœuds d'étapes, entrée galerie |
 | `--dur-narrative` | 950 ms | titres, textes, zoom photo |
-| `--dur-cinematic` | 1400 ms | rideau photo, hero |
+| `--dur-cinematic` | 1400 ms | zoom des photos à l'allumage, hero |
 | `--stagger` | 70 ms | décalage entre éléments d'un même lot (max 6 → 420 ms) |
 
 | Courbe | Valeur | Quand |
 |---|---|---|
 | `--ease-out` | `cubic-bezier(.16, 1, .3, 1)` | **entrées** : départ vif, arrivée longue et douce |
-| `--ease-in-out` | `cubic-bezier(.65, 0, .35, 1)` | **déplacements à l'écran** : lumière, FLIP, pastille, rideau |
+| `--ease-in-out` | `cubic-bezier(.65, 0, .35, 1)` | **déplacements à l'écran** : lumière, FLIP, allumage des photos |
 | `--ease-in` | `cubic-bezier(.7, 0, .84, 0)` | **sorties** : l'élément part vite, on ne l'attend pas |
 | `--ease-back` | `cubic-bezier(.34, 1.45, .64, 1)` | **confirmations** : léger dépassement (succès, retour magnétique, nœud allumé) |
 
@@ -59,7 +59,7 @@ Un seul `IntersectionObserver` ; les éléments qui entrent ensemble sont class�
 | Texte, cartes | `.reveal` | fondu + montée de 24 px | narrative / out |
 | Titres de section | `.reveal--mask` (auto) | le texte monte de 0,4 em à travers une fente invisible | narrative / out |
 | Surtitre | `.eyebrow.reveal` | le petit trait se dessine 120 ms après | component / in-out |
-| Photos | `.reveal--curtain` (auto) | rideau de bas en haut + photo de 1,18 à 1 | cinematic / in-out + out |
+| Photos | `.reveal--curtain` (auto) | allumage d'écran : un point lumineux s'étire en ligne, la ligne s'ouvre sur la photo surexposée qui retrouve ses couleurs (1,2 s) ; photo de 1,1 à 1 | 1200 ms in-out + cinematic out |
 
 Le masque est posé sur un enfant (`.mask-inner`, `.gallery-btn`) et non sur l'élément observé. Chrome considère en effet un élément entièrement masqué par `clip-path` comme invisible pour l'IntersectionObserver.
 
@@ -94,7 +94,7 @@ Une seule boucle `requestAnimationFrame`. Chaque effet n'est calculé que lorsqu
 | CTA magnétiques (`data-magnetic`) | suivent le pointeur (±8 px / ±6 px), reviennent avec `--ease-back` |
 | Index des services | le titre glisse de 0,35 em, le numéro passe en bleu, le courant se dessine sous la ligne (600 ms, in-out) ; la réalisation correspondante flotte sous le curseur (suivi lissé à 18 % par image, inclinaison de ±6° selon la vitesse, fondu enchaîné entre photos) |
 | Numéro de téléphone (pied de page) | le dégradé remplit le texte de gauche à droite (950 ms, in-out), la flèche avance |
-| Photos | zoom de 1,06 (950 ms) ; la légende, placée sous la photo, apparaît en fondu après le rideau |
+| Photos | zoom de 1,06 (950 ms) ; la légende, placée sous la photo, apparaît en fondu une fois la photo allumée |
 | Liens texte | soulignement qui se dessine depuis la gauche |
 | Champs (contact sombre) | simple trait ; au focus, le courant se dessine le long du trait (600 ms, in-out) et le label passe en cyan |
 | Photos de la galerie | étalonnage commun au repos (contraste +6 %, saturation −14 %, légère chaleur) ; au survol, la photo d'origine revient, comme si la lumière s'allumait (600 ms) |
