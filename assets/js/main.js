@@ -320,7 +320,8 @@
       img.style.setProperty('--ar', (thumb.naturalWidth / thumb.naturalHeight) || 4 / 3);
       img.src = thumb.currentSrc || thumb.src;
       img.alt = thumb.alt;
-      cap.innerHTML = $('.gallery-cap', btn.closest('.gallery-item')).innerHTML;
+      const caption = $('.gallery-cap', btn.closest('.gallery-item'));
+      cap.innerHTML = caption ? caption.innerHTML : '';
       const full = new Image();
       full.src = btn.dataset.full;
       full.decode().then(() => { if (visible()[current] === btn) img.src = full.src; }).catch(() => {});
