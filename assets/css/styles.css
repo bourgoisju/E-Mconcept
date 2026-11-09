@@ -104,11 +104,11 @@ button { cursor: pointer; }
 
 /* Typographic signature: condensed capitals + one serif italic accent per title.
    Accent = solid navy on light (contrast), the "current" gradient on dark. */
-h2 em {
+h2 em, .work-page h1 em {
   font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500;
   text-transform: none; letter-spacing: -.015em; color: var(--navy); padding-right: .04em;
 }
-.section-dark h2 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .18em; margin-bottom: -.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.section-dark h2 em, .section-dark h1 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .18em; margin-bottom: -.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
 .grad {
   background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -623,6 +623,81 @@ h2 em {
 .gallery-btn:hover img, .gallery-btn:focus-visible img { scale: 1.06; }
 .gallery-video { cursor: default; }
 .gallery-btn:focus-visible { outline-offset: -3px; }
+
+/* ---------- Réalisations: category cards (home) ---------- */
+/* Two wide doors, then three: each card opens its own page of work. */
+.work-cats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1rem, 2vw, 1.5rem); }
+.work-cat { grid-column: span 4; }
+.work-cat.is-lg { grid-column: span 6; }
+.work-cat a {
+  position: relative; display: block; height: clamp(280px, 28vw, 380px); overflow: hidden;
+  border-radius: var(--radius); background: var(--ink-800); color: var(--white); text-decoration: none;
+}
+.work-cat.is-lg a { height: clamp(320px, 34vw, 480px); }
+.work-cat img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: contrast(1.06) saturate(.86) brightness(.96) sepia(.06);
+  transition: scale var(--dur-narrative) var(--ease-out), filter var(--dur-component) var(--ease-out);
+}
+.work-cat a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(11 26 51 / 88%) 0%, rgb(11 26 51 / 35%) 40%, rgb(11 26 51 / 0%) 65%); }
+.work-cat-body {
+  position: absolute; z-index: 1; inset: auto 0 0 0; padding: clamp(1.1rem, 2vw, 1.6rem);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+}
+.work-cat-num { display: block; margin-bottom: .35rem; font-size: .8rem; font-weight: 600; letter-spacing: .16em; color: var(--cyan); }
+.work-cat-title { display: block; font-family: var(--font-display); font-weight: 800; text-transform: uppercase; line-height: 1.02; font-size: clamp(1.35rem, 1rem + 1.1vw, 2rem); text-wrap: balance; }
+.work-cat-count { display: block; margin-top: .4rem; font-size: .9rem; color: rgb(255 255 255 / 70%); }
+.work-cat-go {
+  flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+  background: rgb(255 255 255 / 12%); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), translate var(--dur-ui) var(--ease-out);
+}
+.work-cat a:hover img, .work-cat a:focus-visible img { scale: 1.05; filter: none; }
+.work-cat a:hover .work-cat-go, .work-cat a:focus-visible .work-cat-go { background: var(--white); color: var(--ink-900); translate: 4px 0; }
+.work-cat a:focus-visible { outline-offset: 3px; }
+/* Category still waiting for its photos: a quiet lit panel instead of an image. */
+.work-cat.is-empty a { background: radial-gradient(120% 90% at 85% 0%, rgb(63 182 224 / 16%), transparent 60%), var(--ink-800); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%); }
+.work-cat.is-empty a::after { display: none; }
+.work-cat.is-empty .work-cat-count { font-style: italic; }
+.work-empty { margin: 0; padding: clamp(2rem, 5vw, 3.5rem); border-radius: var(--radius); text-align: center; color: var(--ink-300); background: rgb(255 255 255 / 4%); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%); }
+@media (max-width: 900px) {
+  .work-cat, .work-cat.is-lg { grid-column: span 6; }
+  .work-cat:last-child { grid-column: span 12; }
+  .work-cat a, .work-cat.is-lg a { height: clamp(240px, 42vw, 340px); }
+}
+@media (max-width: 600px) {
+  .work-cat, .work-cat.is-lg, .work-cat:last-child { grid-column: span 12; }
+  .work-cat a, .work-cat.is-lg a { height: 240px; }
+}
+
+/* ---------- Réalisations: category page ---------- */
+.work-page { padding-top: calc(var(--header-h) + clamp(2rem, 5vw, 3.5rem)); min-height: 70vh; }
+.work-page h1 { font-size: var(--fs-h2); font-weight: 800; text-transform: uppercase; text-wrap: balance; color: var(--white); margin-bottom: 1.1rem; }
+.work-back {
+  display: inline-flex; align-items: center; gap: .55rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  font-size: .95rem; font-weight: 500; color: rgb(255 255 255 / 75%); text-decoration: none;
+  transition: color var(--dur-micro) var(--ease-out);
+}
+.work-back .icon { rotate: 180deg; transition: translate var(--dur-ui) var(--ease-out); }
+.work-back:hover { color: var(--white); }
+.work-back:hover .icon { translate: -4px 0; }
+
+/* Natural-ratio masonry: every photo shown whole, in reading columns. */
+.gallery--masonry { display: block; columns: 3; column-gap: clamp(1rem, 2vw, 1.5rem); }
+.gallery--masonry .gallery-item { break-inside: avoid; margin-bottom: clamp(1.5rem, 2.5vw, 2rem); }
+.gallery--masonry .gallery-btn { height: auto; aspect-ratio: var(--ar, 4 / 3); }
+@media (max-width: 900px) { .gallery--masonry { columns: 2; } }
+@media (max-width: 600px) { .gallery--masonry { columns: 1; } }
+
+.work-others { margin-top: clamp(2.5rem, 5vw, 4rem); padding-top: clamp(1.75rem, 3vw, 2.5rem); border-top: 1px solid rgb(255 255 255 / 12%); }
+.work-others-title { margin: 0 0 1rem; font-size: .8rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); }
+.work-others ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
+.work-others a {
+  display: inline-block; padding: .65rem 1.15rem; border-radius: 999px; font-size: .95rem; font-weight: 500;
+  color: rgb(255 255 255 / 85%); background: rgb(255 255 255 / 6%); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 14%); text-decoration: none;
+  transition: background-color var(--dur-micro), color var(--dur-ui) var(--ease-out);
+}
+.work-others a:hover { background: var(--white); color: var(--ink-900); }
 
 /* Lightbox */
 .lightbox {
