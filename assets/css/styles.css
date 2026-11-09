@@ -695,6 +695,7 @@ h2 em, .work-page h1 em {
 .gallery--edit .gallery-item { --mh: clamp(300px, 34vw, 470px); }
 .gallery--edit .g-3 { grid-column: span 3; }
 .gallery--edit .g-4 { grid-column: span 4; }
+.gallery--edit .g-8 { grid-column: span 8; }
 .gallery--edit .g-6 { grid-column: span 6; }
 .gallery--edit .g-12 { grid-column: span 12; }
 .gallery--edit .is-banner .gallery-btn { height: auto; aspect-ratio: var(--ar); }
@@ -705,9 +706,9 @@ h2 em, .work-page h1 em {
   .gallery--edit .gallery-item { --mh: auto; }
   .gallery--edit .g-3, .gallery--edit .g-4 { grid-column: span 6; }
   .gallery--edit .g-4:last-child { grid-column: span 12; }
-  .gallery--edit .g-6, .gallery--edit .g-12 { grid-column: span 12; }
+  .gallery--edit .g-6, .gallery--edit .g-8, .gallery--edit .g-12, .gallery--edit .t-wide { grid-column: span 12; }
   .gallery--edit .gallery-btn { aspect-ratio: 3 / 4; }
-  .gallery--edit .g-6 .gallery-btn { aspect-ratio: 4 / 3; }
+  .gallery--edit .g-6 .gallery-btn, .gallery--edit .g-8 .gallery-btn, .gallery--edit .t-wide .gallery-btn { aspect-ratio: 4 / 3; }
   .gallery--edit .g-4:last-child .gallery-btn { aspect-ratio: 4 / 3; }
   .gallery--edit .is-banner .gallery-btn { aspect-ratio: var(--ar); }
 }
