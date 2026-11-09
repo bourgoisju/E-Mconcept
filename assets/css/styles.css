@@ -698,6 +698,9 @@ h2 em, .work-page h1 em {
 .gallery--edit .g-6 { grid-column: span 6; }
 .gallery--edit .g-12 { grid-column: span 12; }
 .gallery--edit .is-banner .gallery-btn { height: auto; aspect-ratio: var(--ar); }
+/* Product shot on white: shown whole on a white card instead of cropped. */
+.gallery--edit .is-product .gallery-btn, .js .reveal--curtain.is-product .gallery-btn { background: #fff; }
+.gallery--edit .is-product .gallery-btn img { top: 0; height: 100%; object-fit: contain; padding: 10%; box-sizing: border-box; filter: none; translate: none; }
 @media (max-width: 900px) {
   .gallery--edit .gallery-item { --mh: auto; }
   .gallery--edit .g-3, .gallery--edit .g-4 { grid-column: span 6; }
