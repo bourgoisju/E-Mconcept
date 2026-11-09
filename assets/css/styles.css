@@ -689,6 +689,27 @@ h2 em, .work-page h1 em {
 @media (max-width: 900px) { .gallery--masonry { columns: 2; } }
 @media (max-width: 600px) { .gallery--masonry { columns: 1; } }
 
+/* Composed grid (a curated page): wide + two tall, mirrored, then a full-width band.
+   Each row shares one height; the band keeps its own panoramic ratio. */
+.gallery--edit { gap: clamp(1rem, 2vw, 1.5rem); }
+.gallery--edit .gallery-item { --mh: clamp(300px, 34vw, 470px); }
+.gallery--edit .g-3 { grid-column: span 3; }
+.gallery--edit .g-6 { grid-column: span 6; }
+.gallery--edit .g-12 { grid-column: span 12; }
+.gallery--edit .is-banner .gallery-btn { height: auto; aspect-ratio: var(--ar); }
+@media (max-width: 900px) {
+  .gallery--edit .gallery-item { --mh: auto; }
+  .gallery--edit .g-3 { grid-column: span 6; }
+  .gallery--edit .g-6, .gallery--edit .g-12 { grid-column: span 12; }
+  .gallery--edit .gallery-btn { aspect-ratio: 3 / 4; }
+  .gallery--edit .g-6 .gallery-btn { aspect-ratio: 4 / 3; }
+  .gallery--edit .is-banner .gallery-btn { aspect-ratio: var(--ar); }
+}
+@media (max-width: 600px) {
+  .gallery--edit .g-3 { grid-column: span 12; }
+  .gallery--edit .is-portrait .gallery-btn { aspect-ratio: 4 / 5; }
+}
+
 .work-others { margin-top: clamp(2.5rem, 5vw, 4rem); padding-top: clamp(1.75rem, 3vw, 2.5rem); border-top: 1px solid rgb(255 255 255 / 12%); }
 .work-others-title { margin: 0 0 1rem; font-size: .8rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); }
 .work-others ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
